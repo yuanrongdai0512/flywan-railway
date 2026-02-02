@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飛灣鐵路公司 - 行控室標準作業手冊</title>
+    <style>
+        /* 全局設定 */
+        :root {
+            --primary-color: #003366;
+            --accent-color: #d9534f;
+            --text-color: #333;
+            --bg-color: #f4f4f4;
+            --paper-width: 210mm;
+            --paper-height: 297mm;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* 模擬紙張效果 */
+        .page {
+            background: white;
+            width: var(--paper-width);
+            min-height: var(--paper-height);
+            margin: 0 auto 20px auto;
+            padding: 25mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+            page-break-after: always;
+            overflow: hidden;
+        }
+
+        /* 頁首頁尾 */
+        .header {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 25mm;
+            right: 25mm;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+            font-size: 0.8em;
+            text-align: center;
+            color: #777;
+        }
+
+        /* 標題樣式 */
+        h1 { font-size: 2em; color: var(--primary-color); text-align: center; margin-top: 30%; }
+        h2 { font-size: 1.5em; border-left: 5px solid var(--primary-color); padding-left: 10px; margin-top: 30px; }
+        h3 { font-size: 1.2em; color: #444; margin-top: 20px; font-weight: bold; }
+        h4 { font-size: 1.1em; color: #555; margin-top: 15px; font-weight: bold; text-decoration: underline;}
+
+        /* 表格樣式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+
+        /* 警告框與備註 */
+        .alert-box {
+            border: 1px solid var(--accent-color);
+            background-color: #fff5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #a94442;
+        }
+        .note-box {
+            border: 1px solid #2196F3;
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #0d47a1;
+        }
+
+        /* 浮水印 */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 6em;
+            color: rgba(0,0,0,0.03);
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+        }
+
+        /* 封面特定樣式 */
+        .cover-title {
+            text-align: center;
+            margin-top: 150px;
+        }
+        .cover-info {
+            text-align: center;
+            margin-top: 200px;
+            font-size: 1.1em;
+        }
+
+        /* 打印設置 */
+        @media print {
+            body { background: none; padding: 0; }
+            .page { box-shadow: none; margin: 0; width: 100%; height: auto; page-break-after: always; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page">
+        <div class="watermark">機密文件 • 內部閱覽</div>
+        <div class="cover-title">
+            <h1>飛灣鐵路公司<br>行控室標準作業手冊</h1>
+            <p style="text-align: center; font-size: 1.5em; color: #666;">Operations Control Center (OCC) Manual</p>
+        </div>
+        <div class="cover-info">
+            <p><strong>文件編號：</strong> FWR-OCC-2024-001</p>
+            <p><strong>版本：</strong> V 1.0</p>
+            <p><strong>生效日期：</strong> 2024年 01月 01日</p>
+            <p><strong>權責單位：</strong> 行車控制中心</p>
+        </div>
+        <div class="footer">頁碼 1 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">飛灣鐵路公司 - 行控室</span>
+            <span>前言與保密協定</span>
+        </div>
+        
+        <h2>前言</h2>
+        <p>本手冊旨在規範飛灣鐵路公司行車控制中心（OCC）之標準作業程序，確保行車安全、提升營運效率，並作為緊急狀況發生時之處置依據。</p>
+        
+        <h2>適用範圍</h2>
+        <p>本手冊適用於所有於行控室值勤之人員，包含主任調度員、列車調度員、電力調度員及站務/環控調度員。</p>
+
+        <div class="alert-box">
+            <strong>保密聲明：</strong><br>
+            本文件包含飛灣鐵路公司之機密營運資訊。未經授權，嚴禁複製、外流或轉載予非相關人員。違者將依本公司規章及相關法律追究責任。
+        </div>
+
+        <h2>修訂紀錄</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>版本</th>
+                    <th>日期</th>
+                    <th>修訂者</th>
+                    <th>修訂內容摘要</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1.0</td>
+                    <td>2024/01/01</td>
+                    <td>行控中心主任</td>
+                    <td>初版發行</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer">頁碼 2 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">飛灣鐵路公司 - 行控室</span>
+            <span>目錄</span>
+        </div>
+        
+        <h2>目錄</h2>
+        <ul style="list-style-type: none; padding-left: 0; font-size: 1.1em; line-height: 2;">
+            <li><strong>第一章：設備簡介</strong> ................................................... 04</li>
+            <li>　1.1 號誌系統 (Signaling) .......................................... 04</li>
+            <li>　1.2 通訊系統 (Comms) .............................................. 05</li>
+            <li>　1.3 電力系統 (Power) .............................................. 06</li>
+            <li><strong>第二章：作業設備介紹</strong> ............................................... 07</li>
+            <li>　2.1 含含顯示盤 (MIMIC / LDP) ................................... 07</li>
+            <li>　2.2 調度員工作站 (Workstations) .................................. 08</li>
+            <li>　2.3 無線電調度台 ...................................................... 09</li>
+            <li><strong>第三章：各席位標準操作程序(SOP)與狀況排除</strong> ...................... 10</li>
+            <li>　3.1 主任調度員 (Chief Controller) .................................. 10</li>
+            <li>　3.2 列車調度員 (Train Controller) .................................. 12</li>
+            <li>　3.3 電力調度員 (Power Controller) .................................. 15</li>
+            <li>　3.4 站務/環控調度員 (Station Controller) ......................... 17</li>
+            <li><strong>附錄：緊急聯絡網與代碼表</strong> ........................................... 19</li>
+        </ul>
+        <div class="footer">頁碼 3 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第一章：設備簡介</span>
+            <span>基礎設施</span>
+        </div>
+
+        <h2>1. 設備簡介</h2>
+        <p>行控室為鐵路系統的大腦，透過下列核心子系統進行全線監控與指揮。</p>
+
+        <h3>1.1 號誌系統 (Signaling System)</h3>
+        <p>本公司採用基於通訊式列車控制 (CBTC) 之號誌系統，具備移動閉塞 (Moving Block) 功能。</p>
+        <ul>
+            <li><strong>ATP (列車自動保護系統)：</strong> 負責監控列車速度，防止超速及追撞。若駕駛員未依速限行駛，ATP 將介入緊急煞車。</li>
+            <li><strong>ATO (列車自動駕駛系統)：</strong> 在正常營運模式下，負責列車的自動加速、減速、停站與車門開關控制。</li>
+            <li><strong>ATS (列車自動監督系統)：</strong> 位於行控室的核心伺服器，負責排班、路徑設定及即時列車位置顯示。</li>
+        </ul>
+
+        <div class="note-box">
+            <strong>聯鎖區 (Interlocking)：</strong> 軌道轉轍器與號誌機之間具備機械與電氣聯鎖，確保路徑設定安全，防止衝突路徑產生。
+        </div>
+
+        <div class="footer">頁碼 4 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第一章：設備簡介</span>
+            <span>通訊系統</span>
+        </div>
+
+        <h3>1.2 通訊系統 (Communications)</h3>
+        <p>通訊系統確保行控室與司機員、車站人員及外部單位之訊息傳遞無誤。</p>
+
+        <h4>1.2.1 TETRA 數位無線電系統</h4>
+        <p>全線配置 TETRA 數位中繼無線電，提供群組通話、緊急插話及選呼功能。</p>
+        <ul>
+            <li><strong>行車調度群組：</strong> 專供列車調度員與司機員通話。</li>
+            <li><strong>站務群組：</strong> 供車站站長與站務人員聯繫。</li>
+            <li><strong>維修群組：</strong> 夜間維修作業使用。</li>
+        </ul>
+
+        <h4>1.2.2 閉路電視系統 (CCTV)</h4>
+        <p>行控室可透過光纖網路調閱全線車站月台、穿堂層及變電站之即時影像。影像保留期限至少 30 天。</p>
+
+        <h4>1.2.3 直通電話 (Hotline)</h4>
+        <p>配置於主任調度員席位，直通消防局、警察局及臨近鐵路單位，無須撥號，提機即通。確保緊急事故發生時之黃金通報時間。</p>
+
+        <div class="footer">頁碼 5 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第一章：設備簡介</span>
+            <span>電力與軌道</span>
+        </div>
+
+        <h3>1.3 電力系統 (Power Supply)</h3>
+        <p>本系統採用 25KV 交流電 (或 750V 直流電，視貴公司設定) 供電。</p>
+        
+        <ul>
+            <li><strong>BSS (主變電站)：</strong> 接收台電 161KV 供電，降壓後轉換為牽引電力。</li>
+            <li><strong>TSS (牽引變電站)：</strong> 沿線分布，直接供給電車線電力。</li>
+            <li><strong>SCADA (電力遙控系統)：</strong> 電力調度員透過此系統監控全線電壓、電流及斷路器狀態。</li>
+        </ul>
+
+        <h3>1.4 軌道轉轍器 (Points/Switches)</h3>
+        <p>用於變換列車行駛軌道。行控室可透過 ATS 系統遙控電動轉轍器。若發生故障，需授權現場人員進行「手搖轉轍器」作業。</p>
+
+        <div class="alert-box">
+            <strong>安全警告：</strong> 
+            電力系統維修或軌道人員進入軌道區前，必須完成「斷電封鎖」程序，並掛上「禁止送電」牌示，經電力調度員確認後方可作業。
+        </div>
+
+        <div class="footer">頁碼 6 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第二章：作業設備介紹</span>
+            <span>監控設備</span>
+        </div>
+
+        <h2>2. 作業設備介紹</h2>
+
+        <h3>2.1 大型顯示盤 (LDP / MIMIC Panel)</h3>
+        <p>位於行控室正前方之大型投影或 LED 牆，顯示全線路網狀態概覽。</p>
+        
+        <table border="1">
+            <tr>
+                <th>顯示顏色</th>
+                <th>代表意義</th>
+            </tr>
+            <tr>
+                <td><span style="color:red">紅色實線</span></td>
+                <td>軌道佔用 (有列車在該區段)</td>
+            </tr>
+            <tr>
+                <td><span style="color:green">綠色實線</span></td>
+                <td>路徑已設定 (鎖定中)</td>
+            </tr>
+            <tr>
+                <td><span style="color:white; background:black;">白色閃爍</span></td>
+                <td>軌道電路故障 / 假佔用</td>
+            </tr>
+            <tr>
+                <td><span style="color:blue">藍色</span></td>
+                <td>第三軌/電車線已斷電 (維修模式)</td>
+            </tr>
+        </table>
+
+        <p><strong>功能：</strong> 讓所有調度員無需切換畫面即可掌握全線列車位置、誤點狀況及供電情形。</p>
+
+        <div class="footer">頁碼 7 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第二章：作業設備介紹</span>
+            <span>工作站</span>
+        </div>
+
+        <h3>2.2 調度員人機介面 (HMI Workstations)</h3>
+        <p>每位調度員桌前配置 3-4 個螢幕，依席位功能不同顯示資訊。</p>
+
+        <h4>ATS 工作站 (Traffic Regulation)</h4>
+        <ul>
+            <li><strong>運行圖 (Train Graph)：</strong> 以時間-距離圖顯示列車運行狀態，斜率代表速度，水平線代表停站時間。</li>
+            <li><strong>路徑列表 (Route List)：</strong> 顯示自動進路設定狀態，可手動介入修改。</li>
+            <li><strong>警報列表 (Alarm List)：</strong> 即時顯示系統故障代碼，分為 Critical (嚴重)、Major (主要)、Minor (次要) 三級。</li>
+        </ul>
+
+        <h4>CCTV 監控螢幕</h4>
+        <p>可選定特定車站或設定「跳躍輪播 (Sequence Mode)」。當車站發生「緊急按鈕 (ESP)」被觸發時，CCTV 螢幕會自動彈出該區域影像。</p>
+
+        <div class="footer">頁碼 8 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第二章：作業設備介紹</span>
+            <span>通訊設備</span>
+        </div>
+
+        <h3>2.3 無線電調度台 (Radio Console)</h3>
+        <p>採觸控螢幕操作，具備以下關鍵按鈕：</p>
+
+        <ul>
+            <li><strong>全線廣播 (All Call)：</strong> 對全線所有列車司機員發話（緊急狀況用）。</li>
+            <li><strong>群組廣播 (Group Call)：</strong> 針對特定路線或群組發話。</li>
+            <li><strong>REC (錄音)：</strong> 所有通話自動錄音，調度台可回放最近 30 分鐘通話。</li>
+        </ul>
+
+        <div class="alert-box">
+            <strong>操作紀律：</strong><br>
+            使用無線電時應遵守標準通話程序，先呼叫受話者，表明身分，再敘述內容，最後以「Over」結束。
+            <br><em>例：「行控中心 呼叫 101次司機員，請回報目前位置，Over。」</em>
+        </div>
+
+        <div class="footer">頁碼 9 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>主任調度員</span>
+        </div>
+
+        <h2>3. 各席位標準操作程序及狀況排除</h2>
+        <p>本章節詳述各席位之權責與針對異常狀況之處置流程。</p>
+
+        <h3>3.1 主任調度員 (Chief Controller)</h3>
+        <p><strong>職責：</strong> 行控室最高指揮官，負責綜整決策、對外通報及跨席位協調。</p>
+
+        <h4>【日常作業 SOP】</h4>
+        <ol>
+            <li><strong>交接班：</strong> 確認上一班次之異常紀錄、待辦事項及維修工單狀態。</li>
+            <li><strong>營運前確認：</strong> 05:30 確認各席位回報系統正常，下達「開始營運」指令。</li>
+            <li><strong>尖峰時刻監控：</strong> 07:00-09:00 監控全線運轉率，適時下達加發班車指令。</li>
+            <li><strong>收班確認：</strong> 確認末班車回廠，指示電力調度員進行斷電，開放維修人員進場。</li>
+        </ol>
+
+        <div class="footer">頁碼 10 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>主任調度員 (狀況排除)</span>
+        </div>
+
+        <h4>【狀況排除：地震發生 (震度 4 級以上)】</h4>
+        <p><strong>情境：</strong> 中央氣象署發布地震警報，系統偵測震度達 4 級。</p>
+
+        <div class="note-box">
+            <strong>處置流程 (Action Flow)：</strong>
+        </div>
+        <ol>
+            <li><strong>全線停車：</strong> 立即指示列車調度員發送「全線緊急停車」指令。</li>
+            <li><strong>廣播安撫：</strong> 透過無線電及車站廣播系統，安撫旅客勿慌張，保持在車廂內。</li>
+            <li><strong>災情確認：</strong>
+                <ul>
+                    <li>指示站務調度員確認各站體結構。</li>
+                    <li>指示電力調度員確認供電系統是否跳脫。</li>
+                    <li>指示司機員目視巡軌。</li>
+                </ul>
+            </li>
+            <li><strong>復駛決策：</strong>
+                <ul>
+                    <li>若無異狀，下令以 25km/h 慢速巡軌一趟。</li>
+                    <li>巡軌正常後，恢復正常營運速度。</li>
+                </ul>
+            </li>
+        </ol>
+
+        <div class="footer">頁碼 11 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>列車調度員</span>
+        </div>
+
+        <h3>3.2 列車調度員 (Train Controller)</h3>
+        <p><strong>職責：</strong> 負責列車運行監控、號誌路徑設定、駕駛員通訊及時刻表調整。</p>
+
+        <h4>【日常作業 SOP】</h4>
+        <ul>
+            <li><strong>發車監控：</strong> 確保列車依時刻表準點由端點站發車。</li>
+            <li><strong>間距調整 (Headway Reg)：</strong> 若前方列車延誤，手動調整後方列車之停站時間 (Dwell Time) 以避免塞車。</li>
+            <li><strong>通訊聯繫：</strong> 接聽司機員回報，並記錄於行車日誌。</li>
+        </ul>
+
+        <table border="1">
+            <tr>
+                <th>操作代碼</th>
+                <th>功能描述</th>
+            </tr>
+            <tr>
+                <td>Hold</td>
+                <td>扣車 (使號誌維持紅燈，列車無法離站)</td>
+            </tr>
+            <tr>
+                <td>Skip Stop</td>
+                <td>過站不停 (用於趕點或車站發生事故時)</td>
+            </tr>
+            <tr>
+                <td>Door Mode</td>
+                <td>切換車門模式 (自動/半自動/手動)</td>
+            </tr>
+        </table>
+
+        <div class="footer">頁碼 12 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>列車調度員 (狀況排除)</span>
+        </div>
+
+        <h4>【狀況排除 1：號誌轉轍器故障】</h4>
+        <p><strong>情境：</strong> 螢幕顯示某轉轍器失去定位 (Out of Correspondence)，呈現閃爍紅光，無法設定路徑。</p>
+
+        <div class="note-box">
+            <strong>SOP 步驟：</strong>
+        </div>
+        <ol>
+            <li><strong>確認影響範圍：</strong> 判斷故障轉轍器影響之列車車次。</li>
+            <li><strong>嘗試重置 (Reset)：</strong> 於工作站執行單次「轉轍器重置」指令。</li>
+            <li><strong>若重置無效：</strong>
+                <ul>
+                    <li>通知受影響列車停車等候。</li>
+                    <li>通報車站站長攜帶「手搖把」及「勾鎖器」前往現場。</li>
+                    <li>授權站長進行現場手搖定更，並加鎖固定。</li>
+                </ul>
+            </li>
+            <li><strong>慢速通過：</strong> 確認現場人員撤離至安全處後，指示列車以「限制手動模式 (RM)」低於 25km/h 通過該區段。</li>
+        </ol>
+
+        <div class="footer">頁碼 13 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>列車調度員 (狀況排除)</span>
+        </div>
+
+        <h4>【狀況排除 2：人員闖入軌道】</h4>
+        <p><strong>情境：</strong> 司機員回報或軌道侵入偵測系統 (IDS) 告警，有人員進入軌道區。</p>
+
+        <div class="alert-box">
+            <strong>緊急處置：</strong>
+        </div>
+        <ol>
+            <li><strong>緊急停車：</strong> 立即按下該區段之「緊急斷電鈕 (ESP)」或發送全區緊急煞車指令。</li>
+            <li><strong>確認位置：</strong> 透過 CCTV 及司機員回報確認闖入者位置及狀態。</li>
+            <li><strong>協同作業：</strong> 通知站務人員及警察前往現場處理。</li>
+            <li><strong>恢復程序：</strong>
+                <ul>
+                    <li>確認人員已離開軌道區。</li>
+                    <li>確認軌道無異物殘留。</li>
+                    <li>解除緊急煞車，並逐步恢復供電與營運。</li>
+                </ul>
+            </li>
+        </ol>
+
+        <div class="footer">頁碼 14 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>電力調度員</span>
+        </div>
+
+        <h3>3.3 電力調度員 (Power Controller)</h3>
+        <p><strong>職責：</strong> 監控全線高壓電、牽引電力及車站低壓電力供應。</p>
+
+        <h4>【日常作業 SOP】</h4>
+        <ul>
+            <li><strong>送電程序：</strong> 每日營運前，確認維修人員已歸還所有路權，依序投入 161KV -> 22KV -> 牽引電力斷路器。</li>
+            <li><strong>負載監控：</strong> 尖峰時刻監控變電站負載，避免過載跳脫。</li>
+            <li><strong>斷電程序：</strong> 收班後，依照維修需求分區斷電，並掛上「電子標籤」防止誤送電。</li>
+        </ul>
+        
+        <p><strong>SCADA 畫面監控重點：</strong></p>
+        <ul>
+            <li>電壓值 (Voltage) 是否在標準範圍內。</li>
+            <li>直流設備之漏電流 (Leakage Current)。</li>
+            <li>變壓器溫度告警。</li>
+        </ul>
+
+        <div class="footer">頁碼 15 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>電力調度員 (狀況排除)</span>
+        </div>
+
+        <h4>【狀況排除：供電區段跳電】</h4>
+        <p><strong>情境：</strong> SCADA 顯示某區段牽引電力斷路器 (DC Breaker) 跳脫，該區列車失去動力。</p>
+
+        <div class="note-box">
+            <strong>SOP 步驟：</strong>
+        </div>
+        <ol>
+            <li><strong>確認故障電流：</strong> 檢視跳脫瞬間之故障電流值（判斷是過載還是短路）。</li>
+            <li><strong>通報：</strong> 通知主任調度員及列車調度員受影響區域。</li>
+            <li><strong>試送電 (Re-close)：</strong>
+                <ul>
+                    <li>若判斷為暫時性故障，通知司機員降弓。</li>
+                    <li>執行一次試送電。</li>
+                    <li>若送電成功，通知司機員升弓復駛。</li>
+                </ul>
+            </li>
+            <li><strong>確認故障持續：</strong>
+                <ul>
+                    <li>若試送電失敗（再次跳脫），嚴禁二次強送。</li>
+                    <li>啟動公務車接駁或單線雙向運轉模式。</li>
+                    <li>派遣電力維修班前往變電站搶修。</li>
+                </ul>
+            </li>
+        </ol>
+
+        <div class="footer">頁碼 16 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>站務/環控調度員</span>
+        </div>
+
+        <h3>3.4 站務/環控調度員 (Station/E&M Controller)</h3>
+        <p><strong>職責：</strong> 監控車站消防、空調通風(HVAC)、電梯電扶梯及旅客資訊系統(PIDS)。</p>
+
+        <h4>【日常作業 SOP】</h4>
+        <ul>
+            <li><strong>開站準備：</strong> 營運前 30 分鐘開啟車站照明、鐵捲門及電扶梯。</li>
+            <li><strong>環境控制：</strong> 依據室外溫度調整車站空調模式（通風/冷氣）。</li>
+            <li><strong>設備監控：</strong> 監控月台門 (PSD) 狀態，若有故障需通知站務人員隔離門扇。</li>
+        </ul>
+
+        <div class="footer">頁碼 17 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">第三章：SOP</span>
+            <span>火災緊急應變</span>
+        </div>
+
+        <h4>【狀況排除：車站火災警報】</h4>
+        <p><strong>情境：</strong> 某車站火警接收總機動作，顯示月台層有煙霧訊號。</p>
+
+        <div class="alert-box">
+            <strong>緊急處置 (Fire Response)：</strong>
+        </div>
+        <ol>
+            <li><strong>確認火情：</strong> 立即調閱該區域 CCTV，並呼叫車站站長現場確認（確認是否為誤報）。</li>
+            <li><strong>啟動排煙模式：</strong> 若確認火災，於工作站啟動該站「緊急排煙模式」，將濃煙抽出，導入新鮮空氣。</li>
+            <li><strong>列車處置：</strong>
+                <ul>
+                    <li>通知列車調度員，即將進站列車「過站不停」。</li>
+                    <li>已停於月台之列車，立即清車並駛離。</li>
+                </ul>
+            </li>
+            <li><strong>疏散旅客：</strong> 透過廣播系統指示旅客依避難方向疏散，並解除驗票閘門鎖定（全開）。</li>
+            <li><strong>通報警消：</strong> 由主任調度員通報 119。</li>
+        </ol>
+
+        <div class="footer">頁碼 18 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">附錄</span>
+            <span>緊急聯絡與代碼</span>
+        </div>
+
+        <h2>附錄 A：常用無線電代碼</h2>
+        <table border="1">
+            <tr>
+                <th>代碼</th>
+                <th>意義</th>
+            </tr>
+            <tr>
+                <td>10-0</td>
+                <td>呼叫行控中心</td>
+            </tr>
+            <tr>
+                <td>10-20</td>
+                <td>回報位置</td>
+            </tr>
+            <tr>
+                <td>Code Yellow</td>
+                <td>技術故障，需維修人員</td>
+            </tr>
+            <tr>
+                <td>Code Red</td>
+                <td>緊急醫療事件</td>
+            </tr>
+            <tr>
+                <td>Code Blue</td>
+                <td>有人員/異物侵入軌道</td>
+            </tr>
+        </table>
+
+        <h2>附錄 B：緊急聯絡電話表</h2>
+        <ul>
+            <li>行控中心主任專線：(02) 2345-XXXX</li>
+            <li>電力維修中心：分機 5501</li>
+            <li>號誌維修中心：分機 5502</li>
+            <li>軌道維修中心：分機 5503</li>
+            <li>市警局捷運隊：110 轉捷運隊</li>
+        </ul>
+
+        <div class="footer">頁碼 19 / 20</div>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <span class="header-logo">封底</span>
+            <span>備註</span>
+        </div>
+
+        <div style="text-align: center; margin-top: 100px;">
+            <h2>安全 • 準點 • 舒適</h2>
+            <p>Safety, Punctuality, Comfort</p>
+            <br><br>
+            <hr style="width: 50%;">
+            <br><br>
+            <p><strong>飛灣鐵路公司 行車控制中心 印製</strong></p>
+            <p>地址：飛灣市中正路100號行控大樓</p>
+            <p>電話：+886-2-8888-9999</p>
+        </div>
+
+        <div style="margin-top: 150px; border: 2px dashed #999; padding: 20px;">
+            <h4>手冊持有人簽署</h4>
+            <p>我已閱讀並理解本手冊之內容，並同意遵守相關作業規定。</p>
+            <br>
+            <p>部門：________________________</p>
+            <p>姓名：________________________</p>
+            <p>日期：________年____月____日</p>
+        </div>
+
+        <div class="footer">頁碼 20 / 20</div>
+    </div>
+
+</body>
+</html>

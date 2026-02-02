@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flywan Neural News｜AI 新聞生成</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #3498db;
+      --bg: #f8f9fa;
+      --terminal-bg: #1e1e1e;
+      --text: #333;
+    }
+
+    body {
+      font-family: "SF Pro TC", "PingFang TC", "Heiti TC", "Microsoft JhengHei", sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* 極簡 Header：唯一通往首頁的路 */
+    header {
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      padding: 1rem 0;
+      text-align: center;
+    }
+
+    .brand-link {
+      text-decoration: none;
+      color: var(--primary);
+      display: inline-block;
+      transition: opacity 0.2s;
+    }
+
+    .brand-link:hover {
+      opacity: 0.7;
+    }
+
+    .brand-title {
+      font-size: 1.2rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .brand-sub {
+      display: block;
+      font-size: 0.7rem;
+      color: #999;
+      letter-spacing: 2px;
+      margin-top: 2px;
+    }
+
+    /* 主內容區 */
+    main {
+      flex: 1;
+      max-width: 720px;
+      margin: 0 auto;
+      width: 100%;
+      padding: 2rem 1rem;
+      box-sizing: border-box;
+    }
+
+    /* 控制面板 */
+    .control-panel {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .ai-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    h1 {
+      margin: 0.5rem 0 1.5rem 0;
+      font-size: 1.8rem;
+      color: var(--primary);
+    }
+
+    .input-wrapper {
+      position: relative;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 15px 20px;
+      padding-right: 110px; /* 留給按鈕的空間 */
+      font-size: 1.1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      box-sizing: border-box;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+    }
+
+    button.btn-generate {
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      bottom: 6px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button.btn-generate:hover {
+      background: var(--accent);
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* 模擬 LLM 輸出區 */
+    .output-area {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+      min-height: 200px;
+      display: none; /* 初始隱藏 */
+      animation: slideUp 0.5s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .article-meta {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 1rem;
+    }
+
+    .article-title {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+    }
+
+    /* 模擬打字機游標 */
+    .cursor::after {
+      content: '▋';
+      color: var(--accent);
+      animation: blink 1s infinite;
+      margin-left: 2px;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .article-body {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #444;
+      white-space: pre-wrap; /* 保留換行 */
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="brand-link">
+      <span class="brand-sub">FLYWAN RAILWAY</span>
+      <span class="brand-title">飛灣鐵路公司</span>
+    </a>
+  </header>
+
+  <main>
+    <div class="control-panel">
+      <span class="ai-badge">AI新聞</span>
+      <h1>想要發布什麼新聞？</h1>
+      <p style="color:#666; margin-bottom:1.5rem;">輸入關鍵字，AI 將為您撰寫完整報導。</p>
+      
+      <div class="input-wrapper">
+        <input type="text" id="keyword" placeholder="輸入關鍵字..." autocomplete="off">
+        <button class="btn-generate" onclick="startGeneration()">生成</button>
+      </div>
+    </div>
+
+    <div class="output-area" id="outputCard">
+      <div class="article-meta">
+        <span id="dateTag">2026.01.26</span>
+        <span id="categoryTag">營運快訊</span>
+      </div>
+      <div id="titleContainer" class="article-title"></div>
+      <div id="bodyContainer" class="article-body"></div>
+    </div>
+  </main>
+
+  <footer>
+    Generated by Flywan-GPT Engine (Client-Side Simulation).<br>
+    僅供娛樂，內容均為虛構。
+  </footer>
+
+<script>
+/**
+ * Flywan AI News Engine V7.4 (Policy-Aware Edition)
+ * 修正重點：
+ * 1. 新增「政策/營運調整」分類：識別「計畫、配合、改點」等詞。
+ * 2. 邏輯優化：若同時出現「停駛」與「計畫」，優先判定為「政策調整」，避免把官方計畫當成災難處理。
+ */
+
+const DATABASE = {
+  stations: [
+    '飛灣工業區', '飛灣港', '物流中心', '飛灣郵輪港', '濱江商務區', '市民廣場', '文化中心',
+    '飛灣新站', '科創園', '飛灣學區', '飛灣大道', '飛灣公園', '錦湖', '鷺島',
+    '空港新城', '飛灣機場', '翡翠新城', '紫荊苑', '御景新村', '自然保育中心', '綾路北站',
+    '全京大道', '全京市區', '全京碼頭', '恆熱', '海莊', '海莊遊樂園', '夏城市區', '碼頭', '夏城', '祥直',
+    '飛灣線', '綾京線', '恆夏線', '環島線'
+  ],
+
+  classifiers: {
+    // 1. 安防 (最優先)
+    security: [
+      '危險', '違禁', '攻擊', '恐嚇', '持刀', '亮刀', '槍', '爆裂物', '易燃', '硫酸', '相撞', '翻車', 
+      '暴力', '騷擾', '偷拍', '吸菸', '喝酒', '檳榔', '逃票', '闖越', '跨越', '臥軌', '出軌', '意外',
+      '螺絲起子', '利器', '尖銳', '刀', '剪刀', '受驚', '驚嚇', '騷動', '咆哮', '警察', '隨機', '恐慌'
+    ],
+    // 2. 政策與營運調整 (新增！專治「計畫性停駛」)
+    policy: [
+      '計畫', '計劃', '政策', '守護', '配合', '調整', '改點', '時刻表', '策略', '轉型', 
+      '復育', '環保', '綠色', '年', '年度', '變更', '裁撤', '停用', '轉移', '升級', '法'
+    ],
+    // 3. 事故 (災難)
+    incident: [
+      '起火', '失火', '燃燒', '冒煙', '濃煙', '火災', '爆炸', '燒', '火光', '焦味',
+      '誤點', '故障', '延誤', '慢分', '晚分', '遲到', '異常', '受阻', '中斷', '停駛', '維修', '取消', '不通',
+      '跳電', '斷電', '訊號', '掉落', '斷裂', '脫落', '受損', '損壞', '卡住', '失靈',
+      '落軌', '撞', '死', '傷', '亡', '急救', '送醫', '暈倒', '不適', '休克',
+      '昏倒', '吐', '失禁', '排泄', '髒亂', '蟲', '鼠', '糾紛', '打架', '口角',
+      '入侵', '異物', '障礙', '颱風', '地震', '豪雨', '淹水', '土石流'
+    ],
+    // 4. 建設 (政績)
+    construction: [
+      '完工', '落成', '啟用', '建設', '動工', '拆除', '改建', '拉皮', '通車', '工程', '驗收', '剪綵', 
+      '社會住宅', '社宅', '大樓', '共構', '開發', '都更', '連通道', '典禮'
+    ],
+    // 5. 生活/活動 (開心)
+    lifestyle: [
+      '景點', '秘境', '美食', '打卡', '拍照', '遊樂', '市集', '活動', '展覽', '音樂節', '散步', '約會', '夜景', '一日遊',
+      '聯賽', '比賽', '球賽', '運動', '馬拉松', '路跑', '開打', '熱情', '歡迎', '邀請', '共襄盛舉', '快樂', '節慶', '季後賽'
+    ],
+    // 6. 商品
+    product: [
+      '便當', '排骨', '雞', '豬', '牛', '魚', '羊', '模型', '周邊', '紀念品', '特價', '優惠', '聯名', '熱銷', '搶購', '完售', '好康', '打折'
+    ]
+  }
+};
+
+const TEMPLATES = {
+  // A. 政策調整類 (專業、願景) <-- 新增這個！
+  policy: {
+    label: '營運調整',
+    color: '#34495e', // 穩重的深灰色
+    titles: [
+      "重要公告：配合 {T} 之營運調整說明",
+      "轉型計畫：{F}",
+      "飛灣鐵路發布關於 {T} 的最新政策",
+      "邁向未來：{S} {T} 正式啟動"
+    ],
+    body: [
+      "為了響應國家政策並提升整體環境品質，飛灣鐵路宣布將針對 **{S}** 進行「{T}」。",
+      "本次「{T}」是本公司長期發展藍圖中的重要一環，旨在達成更永續的營運模式。",
+      
+      "配合「{T}」的推動，部分相關設施設施與服務將進行必要的調整或轉移。",
+      "我們理解這些變動可能會改變部分旅客的習慣，但這是為了更長遠的未來所做的決定。",
+      
+      "策略長表示：「『{T}』象徵著飛灣鐵路的轉型與承諾，我們將確保過程順利平穩。」",
+      "相關規劃人員指出：「透過 **{S}** 的『{T}』，我們希望能創造人與環境共贏的局面。」",
+      
+      "詳細的調整時程與替代方案，請詳閱官方網站之專區。",
+      "感謝各位旅客的理解與支持，讓我們一起邁向新的里程碑。"
+    ]
+  },
+
+  // B. 安防類
+  security: {
+    label: '重要公告',
+    color: '#2c3e50',
+    titles: [
+      "嚴正聲明：關於 {F} 之處置說明",
+      "旅客注意！{S} 發生 {T} 事件",
+      "違規零容忍：針對「{T}」本公司將依法辦理",
+      "安全宣導：請勿 {T}"
+    ],
+    body: [
+      "飛灣鐵路今日針對 **{S}** 發生的「{T}」事件發布嚴正聲明。",
+      "關於近期有旅客在 **{S}** 出現「{T}」之行為，本公司重申，這已嚴重違反鐵路運送規則。",
+      "為維護大眾安全，我們已要求第一線人員針對「{T}」加強巡查。",
+      "根據現行法規，若旅客涉及「{T}」，站務人員有權拒絕運送並通報鐵路警察。",
+      "相關部門主管強調：「大眾運輸的安全不容妥協，對於『{T}』我們絕不寬貸。」",
+      "法務室指出：「針對『{T}』所造成的影響，本公司將保留法律追訴權。」",
+      "呼籲旅客發揮公德心，共同杜絕「{T}」之行為。",
+      "若發現類似狀況，請立即按壓緊急對講機或通報站務人員。"
+    ]
+  },
+
+  // C. 事故類
+  incident: {
+    label: '緊急通報',
+    color: '#c0392b',
+    titles: [
+      "突發狀況：{F}，營運遭受影響",
+      "緊急說明：關於 {S} 發生 {T} 之事件",
+      "營運受阻：{S} {T}，請旅客注意",
+      "針對「{T}」事件，本公司致上歉意"
+    ],
+    body: [
+      "飛灣鐵路行控中心通報，今日稍早於 **{S}** 發生「{T}」狀況，造成部分營運受到干擾。",
+      "關於民眾通報 **{S}** 出現「{T}」一事，本公司已立即成立應變小組進行處置。",
+      "據了解，這起關於「{T}」的狀況發生突然，現場站務人員已盡力引導，並通報相關單位。",
+      "經初步檢視，**{S}** 的「{T}」情形目前已在控制範圍內，相關原因仍待進一步釐清。",
+      "營運處長表示：「對於 **{S}** 發生此事造成旅客不便，我們深感抱歉，安全絕對是我們的首要考量。」",
+      "現場主管指出：「針對『{T}』的問題，我們正在進行緊急排除，請旅客耐心等候。」",
+      "受影響之旅客，請保留票根，並留意車站廣播或 App 的最新資訊。",
+      "本公司將針對本次事件進行深刻檢討，致力於提供更穩定的旅運服務。"
+    ]
+  },
+
+  // D. 建設類
+  construction: {
+    label: '城市建設',
+    color: '#27ae60',
+    titles: [
+      "里程碑達成！{S} {T}，邁向新紀元",
+      "城市蛻變：{S} {T} 今日正式發布",
+      "寫下新頁：關於 {S} {T} 的最新進展",
+      "好消息！{F}"
+    ],
+    body: [
+      "備受市民期待的 **{S}** 傳來捷報！關於「{T}」的工程計畫，終於取得了重大進展。",
+      "為了提升城市生活品質，飛灣鐵路投入資源推動的「{T}」，今日在 **{S}** 展現了具體成果。",
+      "這項關於「{T}」的建設，不僅改善了 **{S}** 周邊的景觀，更預計帶動區域的整體發展。",
+      "過去該區域因發展受限，如今隨著「{T}」的落實，將迎來翻轉契機。",
+      "工程處長欣慰地表示：「看到『{T}』順利推進，這是所有工程團隊日夜打拚的成果。」",
+      "在地里長受訪時說：「**{S}** 真的變漂亮了，『{T}』對我們居民來說非常重要。」",
+      "歡迎市民朋友經過 **{S}** 時，停下腳步感受這份改變。",
+      "隨著硬體設施到位，飛灣鐵路將持續為這座城市注入新的活力。"
+    ]
+  },
+
+  // E. 旅遊生活類
+  lifestyle: {
+    label: '生活風格',
+    color: '#16a085',
+    titles: [
+      "週末去哪玩？{S} {T} 成為話題焦點",
+      "熱情登場：{S} {T} 邀請您共襄盛舉",
+      "打卡熱點！{S} {T} 讓網友瘋傳",
+      "探索飛灣：{F}"
+    ],
+    body: [
+      "最近在社群媒體上爆紅的，竟然是 **{S}**！原來是這裡的「{T}」吸引了大批民眾朝聖。",
+      "放假不知道去哪裡？飛灣鐵路推薦您前往 **{S}**，體驗最新的「{T}」。",
+      "這裡原本是通勤車站，但因為「{T}」的舉辦，讓 **{S}** 充滿了熱鬧的氣氛。",
+      "實際走訪現場，可以發現「{T}」確實有其獨特魅力，非常適合闔家光臨。",
+      "行銷部經理笑說：「沒想到 **{S}** 會因為『{T}』而這麼熱鬧，歡迎大家搭火車來玩。」",
+      "參與民眾興奮表示：「看到『{T}』的消息就趕快衝來了，現場氣氛真的很棒！」",
+      "下次搭車經過 **{S}**，別忘了留點時間體驗「{T}」。",
+      "飛灣鐵路將持續挖掘沿線的驚喜，讓旅程不只是移動，更是探索。"
+    ]
+  },
+
+  // F. 通用類
+  general: {
+    label: '最新消息',
+    color: '#2980b9',
+    titles: [
+      "最新公告：關於 {F} 的資訊",
+      "焦點議題：{F}",
+      "飛灣鐵路發布 {T} 相關說明"
+    ],
+    body: [
+      "飛灣鐵路今日針對 **{S}** 的「{T}」議題發布了相關資訊。",
+      "關於近期民眾關注的「{T}」，本公司提供了最新的相關說明。",
+      "「{T}」是近期的討論焦點，也吸引了許多往來 **{S}** 的旅客注意。",
+      "針對「{T}」的具體內容，我們已整理相關資訊供大眾參考。",
+      "相關部門表示：「透過發布『{T}』的資訊，希望能讓大眾更了解我們的營運概況。」",
+      "資深員工指出：「**{S}** 的『{T}』，確實是大家關心的事情。」",
+      "未來我們將持續更新關於 **{S}** 的後續動態。",
+      "更多關於「{T}」的詳細內容，歡迎至官方網站查詢。"
+    ]
+  }
+};
+
+function parseInput(input) {
+  let bestStation = "";
+  let maxLen = 0;
+  DATABASE.stations.forEach(station => {
+    if (input.includes(station) && station.length > maxLen) {
+      bestStation = station;
+      maxLen = station.length;
+    }
+  });
+  let subject = bestStation || "本公司";
+  let topic = input.replace(bestStation, "").trim();
+  if (!topic) topic = "最新發展";
+  topic = topic.replace(/^[，,、\s]+/, "");
+  return { subject, topic, full: input };
+}
+
+function determineCategory(input) {
+  // 檢查順序：安防 -> 政策(計畫優先於事故) -> 事故 -> 建設 -> 旅遊 -> 商品 -> 通用
+  for (let word of DATABASE.classifiers.security) if (input.includes(word)) return 'security';
+  for (let word of DATABASE.classifiers.policy) if (input.includes(word)) return 'policy'; // 新增：政策優先檢查
+  for (let word of DATABASE.classifiers.incident) if (input.includes(word)) return 'incident';
+  for (let word of DATABASE.classifiers.construction) if (input.includes(word)) return 'construction';
+  for (let word of DATABASE.classifiers.lifestyle) if (input.includes(word)) return 'lifestyle';
+  for (let word of DATABASE.classifiers.product) if (input.includes(word)) return 'product';
+  return 'general';
+}
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function generateArticle(rawInput) {
+  const input = rawInput.trim();
+  const { subject, topic, full } = parseInput(input);
+  const category = determineCategory(input);
+  const template = TEMPLATES[category] || TEMPLATES.general;
+  
+  let title = pick(template.titles)
+    .replace(/{S}/g, subject).replace(/{T}/g, topic).replace(/{F}/g, full);
+
+  const b = template.body;
+  const safeBody = (b.length >= 8) ? b : TEMPLATES.general.body;
+  
+  let bodyParts = [
+    Math.random() > 0.5 ? safeBody[0] : safeBody[1],
+    Math.random() > 0.5 ? safeBody[2] : safeBody[3],
+    Math.random() > 0.5 ? safeBody[4] : safeBody[5],
+    Math.random() > 0.5 ? safeBody[6] : safeBody[7]
+  ];
+
+  let html = "";
+  html += `<p><strong>（飛灣訊）</strong>${bodyParts[0]}</p>`;
+  html += `<p>${bodyParts[1]}</p>`;
+  html += `<div class="highlight-quote">${bodyParts[2]}</div>`;
+  html += `<p>${bodyParts[3]}</p>`;
+
+  html = html.replace(/{S}/g, subject).replace(/{T}/g, topic).replace(/{F}/g, full);
+
+  return { title, body: html, label: template.label, color: template.color };
+}
+
+let isGenerating = false;
+async function typeTitle(element, text) {
+  element.innerHTML = "";
+  element.classList.add('cursor');
+  for(let i=0; i<text.length; i++) {
+    element.innerHTML += text.charAt(i);
+    await new Promise(r => setTimeout(r, 30));
+  }
+  element.classList.remove('cursor');
+}
+
+async function startGeneration() {
+  if (isGenerating) return;
+  const inputEl = document.getElementById('keyword');
+  const keyword = inputEl.value.trim();
+  if (!keyword) { alert("請輸入內容！"); return; }
+  
+  isGenerating = true;
+  const btn = document.querySelector('.btn-generate');
+  btn.innerText = "AI 運算中...";
+  btn.disabled = true;
+
+  try {
+      const article = generateArticle(keyword);
+      const outputCard = document.getElementById('outputCard');
+      outputCard.style.display = 'block';
+      outputCard.style.borderTop = `5px solid ${article.color}`;
+      
+      const catTag = document.getElementById('categoryTag');
+      if(catTag) { catTag.innerText = article.label; catTag.style.color = article.color; }
+
+      const d = new Date();
+      const dateTag = document.getElementById('dateTag');
+      if(dateTag) dateTag.innerText = `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+
+      await typeTitle(document.getElementById('titleContainer'), article.title);
+      
+      const bodyContainer = document.getElementById('bodyContainer');
+      bodyContainer.style.opacity = 0;
+      bodyContainer.innerHTML = article.body;
+      
+      let op = 0;
+      const timer = setInterval(() => {
+        if (op >= 1) clearInterval(timer);
+        bodyContainer.style.opacity = op;
+        op += 0.05;
+      }, 30);
+  } catch (error) { console.error(error); alert("錯誤"); }
+
+  btn.innerText = "生成報導";
+  btn.disabled = false;
+  isGenerating = false;
+}
+
+document.getElementById('keyword').addEventListener('keypress', (e) => {
+  if(e.key === 'Enter') startGeneration();
+});
+</script>
+</body>
+</html>

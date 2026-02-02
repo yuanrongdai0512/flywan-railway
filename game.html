@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>飛灣鐵路駕駛模擬器</title>
+    <style>
+        :root {
+            --bg-body: #000;
+            --bg-panel: #141414;
+            --color-ato: #00ccff;   
+            --color-atp: #ffaa00;   
+            --color-ok: #00ff00;    
+            --color-err: #ff3333;   
+            --font-main: "Consolas", "Microsoft JhengHei", sans-serif;
+        }
+
+        html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background-color: var(--bg-body); font-family: var(--font-main); color: #eee; user-select: none; display: flex; flex-direction: column; }
+
+        /* --- 覆蓋層 --- */
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 10000;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .box { background: #222; border: 3px solid var(--color-ato); border-radius: 10px; padding: 30px; width: 90%; max-width: 500px; text-align: center; }
+        select { width: 100%; padding: 10px; background: #333; color: #fff; margin: 10px 0; border: 1px solid #555; font-size: 16px; }
+        button { width: 100%; padding: 15px; font-size: 20px; background: var(--color-ok); border: none; font-weight: bold; cursor: pointer; margin-top: 20px; border-radius: 5px; color:#000; }
+        .fail-box { border-color: var(--color-err); }
+        .win-box { border-color: var(--color-ok); }
+
+        /* --- 視窗 --- */
+        #viewport {
+            position: relative; flex: 60;
+            background: linear-gradient(to bottom, #87CEEB 0%, #dff 100%);
+            overflow: hidden; border-bottom: 5px solid #333;
+            cursor: pointer;
+        }
+        .scenery-layer { position: absolute; bottom: 80px; width: 100%; height: 400px; opacity: 0.8; }
+        #city-bg { background: repeating-linear-gradient(90deg, #b0c4de 0px, #b0c4de 100px, transparent 100px, transparent 300px); height: 100%; bottom: 0; }
+        
+        /* 月台長度 1750px (175m) */
+        #platform-obj { 
+            position: absolute; bottom: 80px; 
+            width: 1750px; height: 120px; 
+            background: linear-gradient(to bottom, #aaa, #888); 
+            border-top: 5px solid #ffcc00; 
+            z-index: 4; 
+        }
+        
+        #stop-marker { position: absolute; bottom: 80px; width: 20px; height: 200px; z-index: 5; display: flex; flex-direction: column; align-items: center; }
+        .stop-sign { width: 40px; height: 40px; background: #fff; border: 3px solid #f00; border-radius: 50%; color: #f00; font-weight: bold; font-size: 24px; text-align: center; line-height: 35px; }
+        .stop-pole { width: 6px; height: 100%; background: #ddd; border: 1px solid #999; }
+        
+        /* 黑線左移至 20% */
+        #train-line {
+            position: absolute; bottom: 0; 
+            left: 20%; transform: translateX(-50%);
+            width: 6px; height: 100%; background: #000; z-index: 20;
+            border-left: 1px solid #fff; border-right: 1px solid #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .track { position: absolute; bottom: 0; width: 100%; height: 80px; background: #333; border-top: 8px solid #666; z-index: 5;}
+        .sleeper { position: absolute; bottom: 0; width: 100%; height: 80px; background: repeating-linear-gradient(90deg, transparent 0, transparent 40px, #111 40px, #111 50px); }
+        
+        #station-sign { 
+            position: absolute; top: 40px; left: 200%;
+            background: #fff; color: #004b87; border: 4px solid #004b87; padding: 10px 20px; 
+            font-weight: 900; font-size: 24px; border-radius: 4px; z-index: 5; white-space: nowrap;
+        }
+        
+        #msg-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9); color: #fff; padding: 30px 50px;
+            font-size: 36px; display: none; z-index: 100; border-radius: 15px;
+            border: 4px solid var(--color-atp); text-align: center; font-weight: bold;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            white-space: pre-line;
+        }
+
+        /* --- 儀表板 --- */
+        #dashboard { position: relative; flex: 40; background-color: var(--bg-panel); display: flex; box-shadow: inset 0 10px 20px rgba(0,0,0,0.8); }
+        .panel-signal { flex: 3; border-right: 2px solid #333; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        
+        .speed-gauge-wrap { position: relative; height: 180px; width: 180px; margin: 5px 0; }
+        .speed-num { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.5em; font-weight: bold; color: var(--color-ato); line-height: 1; }
+        
+        .ring-bg { fill: none; stroke: #222; stroke-width: 20; }
+        .ring-limit { fill: none; stroke: var(--color-atp); stroke-width: 20; stroke-linecap: butt; transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0 1000; transition: stroke-dasharray 0.1s linear; opacity: 0.8; }
+        .ring-val { fill: none; stroke: var(--color-ato); stroke-width: 12; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; stroke-dasharray: 0 1000; transition: stroke-dasharray 0.1s linear; }
+        .flashing { animation: blink 0.2s infinite; }
+
+        .lamp { width: 90%; text-align: center; padding: 5px; background: #333; margin-top: 5px; border-radius: 4px; color: #555; font-weight: bold; font-size: 0.8em; }
+        .lamp.on { background: var(--color-err); color: #fff; box-shadow: 0 0 10px #ff3333; }
+        .lamp.warn { background: var(--color-atp); color: #000; box-shadow: 0 0 10px var(--color-atp); animation: blink 0.5s infinite; }
+
+        .ma-container { width: 90%; margin-top: auto; background: #111; border: 1px solid #444; padding: 5px; border-radius: 8px; }
+        
+        /* 停車規樣式 */
+        #stop-gauge {
+            position: relative; width: 100%; height: 25px; 
+            background: #ccc; 
+            margin-top: 5px; border-radius: 4px; overflow: hidden; 
+            border: 2px solid #555;
+        }
+        #stop-gauge-line {
+            position: absolute; left: 50%; top: 0; height: 100%; width: 2px; 
+            background: #000; 
+            transform: translateX(-50%); z-index: 5;
+        }
+        #stop-gauge-dot {
+            position: absolute; top: 50%; width: 12px; height: 12px; 
+            background: #f00; 
+            border-radius: 50%; transform: translate(-50%, -50%); 
+            display: none; z-index: 10; 
+            box-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+
+        .panel-tcms { flex: 3; border-right: 2px solid #333; padding: 10px; display: flex; flex-direction: column; }
+        
+        #ui-status-monitor { background: #222; border: 1px solid #555; color: #888; padding: 10px; margin-top: 10px; text-align: center; font-weight: bold; font-size: 1.1em; border-radius: 5px;}
+        
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px; }
+        .data-item { background: #222; padding: 5px; border-radius: 4px; border: 1px solid #444; text-align: center; }
+        .data-lbl { color: #888; font-size: 0.6em; }
+        .data-val { color: #fff; font-size: 0.9em; font-weight: bold; }
+
+        .panel-controls { flex: 2; background: #222; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .lever-group { display: flex; width: 100%; justify-content: space-around; height: 80%; }
+        .lever-track { position: relative; width: 30px; background: #111; border: 1px solid #555; border-radius: 10px; height: 100%; }
+        .lever-handle { position: absolute; left: 2px; width: 24px; height: 20px; border-radius: 5px; transition: top 0.1s; box-shadow: 0 2px 5px #000; z-index: 10; cursor: grab; }
+        #handle-pwr { background: #00cc00; top: 90%; }
+        #handle-brk { background: #ff3333; top: 50%; }
+
+.lever-track {
+    touch-action: none; /* 禁用瀏覽器默認觸控行為，防止畫面晃動 */
+    cursor: pointer;
+}
+.lever-handle {
+    transition: top 0.05s linear; /* 縮短延遲時間，增加即時感 */
+}
+
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+.lever-handle {
+    cursor: pointer;
+    touch-action: none; /* 防止移動端捲動干擾 */
+}
+    </style>
+</head>
+<body onclick="window.focus()">
+
+<div id="overlay">
+    <div id="menu-box" class="box">
+        <h2 style="color:var(--color-ato)">飛灣鐵路駕駛模擬器</h2>
+        <div style="text-align:left;">
+            <label>起始車站</label><select id="start-sel"></select>
+            <label>行駛方向</label><select id="dir-sel"><option value="down">下行 (往 全京)</option><option value="up">上行 (往 工業區)</option></select>
+            <label>車種</label><select id="type-sel"><option value="local">普通 (Local)</option><option value="express">機場快速 (Express)</option></select>
+        </div>
+        <p style="font-size:0.8em; color:#aaa; margin-top:10px; line-height: 1.6;">
+            ⚠️ <strong>操作指南：</strong><br>
+            1. 任務目標：連續完成 3 個停靠站。<br>
+            2. 左側黑線對準停車標記 (誤差5m內，30CM內尤佳)。<br>
+            3. <strong>依照速限行駛</strong> (請注意預告黃線)。<br>
+            4. 關門請按 Space。<br>
+        </p>
+        <button onclick="initGame()">開始駕駛 (START)</button>
+    </div>
+    
+    <div id="result-box" class="box" style="display:none;">
+        <h1 id="res-title">檢定失敗</h1>
+        <p id="res-desc" style="font-size:1.2em; white-space: pre-line;"></p>
+        <button onclick="location.reload()" style="background:#fff; color:#000;">重新開始</button>
+    </div>
+</div>
+
+<div id="viewport">
+    <div class="scenery-layer" id="city-bg"></div>
+    <div id="platform-obj"></div>
+    <div id="stop-marker"><div class="stop-sign">停</div><div class="stop-pole"></div></div>
+    
+    <div class="track"><div class="sleeper" id="sleeper"></div></div>
+    <div id="train-line"></div>
+    <div id="station-sign">車站</div>
+    <div id="msg-center"></div>
+</div>
+
+<div id="dashboard">
+    <div class="panel-signal">
+        <div style="color:#888; font-size:0.8em;">ATP MONITOR</div>
+        <div class="speed-gauge-wrap">
+            <svg width="180" height="180" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="80" class="ring-bg"></circle>
+                <circle id="gauge-limit" cx="100" cy="100" r="80" class="ring-limit"></circle>
+                <circle id="gauge-speed" cx="100" cy="100" r="80" class="ring-val"></circle>
+            </svg>
+            <div class="speed-num"><span id="ui-speed">0</span></div>
+        </div>
+        <div id="lamp-atp" class="lamp">ATP NORM</div>
+        
+        <div class="ma-container">
+            <div class="ma-info" style="font-size:0.7em; display:flex; justify-content:space-between;">
+                <span>DIST</span><span id="ui-dist" style="color:var(--color-ato)">0 m</span>
+            </div>
+            
+            <div id="stop-gauge">
+                <div id="stop-gauge-line"></div>
+                <div id="stop-gauge-dot"></div>
+                <div style="position:absolute; left:0; top:0; height:100%; width:1px; background:#999;"></div>
+                <div style="position:absolute; right:0; top:0; height:100%; width:1px; background:#999;"></div>
+            </div>
+            
+            <div style="display:flex; justify-content:space-between; font-size:0.6em; color:#888; margin-top:2px;">
+                <span>-50cm</span>
+                <span>+50cm</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-tcms">
+        <div style="border-bottom:1px solid #444; color:var(--color-ato); display:flex; justify-content:space-between;">
+            <span>TCMS</span><span id="ui-clock">12:00</span>
+        </div>
+        
+        <div id="ui-status-monitor" class="status-monitor">CHECKING...</div>
+
+        <div class="data-grid">
+            <div class="data-item"><div class="data-lbl">CURRENT</div><div class="data-val" id="ui-curr" style="color:var(--color-ok)">-</div></div>
+            <div class="data-item"><div class="data-lbl">NEXT STOP</div><div class="data-val" id="ui-next">-</div></div>
+            <div class="data-item"><div class="data-lbl">LIMIT</div><div class="data-val" id="ui-limit" style="color:var(--color-atp)">0</div></div>
+            <div class="data-item"><div class="data-lbl">GRAD</div><div class="data-val" id="ui-grad">0‰</div></div>
+            <div class="data-item"><div class="data-lbl">DOOR</div><div class="data-val" id="ui-door">CLSD</div></div>
+            <div class="data-item"><div class="data-lbl">BC</div><div class="data-val" id="ui-bc">0.0</div></div>
+        </div>
+        <div id="lamp-door-warn" class="lamp" style="margin-top:auto;">DOOR CLOSING</div>
+    </div>
+
+    <div class="panel-controls">
+        <div class="lever-group">
+            <div style="position:relative;">
+                <div class="lever-track"><div class="lever-handle" id="handle-brk"></div></div>
+                <div style="text-align:center; font-size:0.6em; margin-top:5px; color:#aaa;">BRK<br>(W/S)</div>
+            </div>
+            <div style="position:relative;">
+                <div class="lever-track"><div class="lever-handle" id="handle-pwr"></div></div>
+                <div style="text-align:center; font-size:0.6em; margin-top:5px; color:#aaa;">PWR<br>(A/D)</div>
+            </div>
+        </div>
+        <div style="font-size:0.7em; color:#666; margin-top:5px;">Space=DOOR</div>
+    </div>
+</div>
+
+<script>
+    // --- 通用工具：計算煞車曲線 (Braking Curve) ---
+    function applyBrakingCurve(currentLimit, targetLimit, distToStart, decelRate = 3.5) {
+        if (distToStart <= 0) return Math.min(currentLimit, targetLimit);
+        if (currentLimit <= targetLimit) return currentLimit;
+
+        // V_allow = sqrt(V_target^2 + 2 * a * d)
+        let vTargetMs = targetLimit / 3.6;
+        let aMs = (decelRate / 3.6);
+        let vAllowMs = Math.sqrt((vTargetMs * vTargetMs) + (2 * aMs * distToStart));
+        
+        return Math.min(currentLimit, vAllowMs * 3.6);
+    }
+
+    // --- 車站資料 ---
+    const STATIONS = [
+        { name: "飛灣工業區", dist: 8400, exp: true, plats: 4 },
+        { name: "飛灣港", dist: 1300, exp: false, plats: 4 },
+        { name: "物流中心", dist: 1200, exp: false, plats: 2 },
+        { name: "飛灣郵輪港", dist: 7200, exp: true, plats: 4 },
+        { name: "濱江商務區", dist: 1500, exp: false, plats: 2 },
+        { name: "市民廣場", dist: 1300, exp: false, plats: 4 },
+        { name: "文化中心", dist: 1900, exp: false, plats: 2 },
+        { name: "飛灣新站", dist: 2300, exp: true, plats: 4 },
+        { name: "科創園", dist: 1200, exp: false, plats: 4 },
+        { name: "飛灣學區", dist: 1700, exp: false, plats: 2 },
+        { name: "飛灣大道", dist: 1600, exp: false, plats: 2 },
+        { name: "飛灣公園", dist: 1400, exp: true, plats: 4 },
+        { name: "錦湖", dist: 500, exp: false, plats: 2 },
+        { name: "鷺島", dist: 2800, exp: false, plats: 2 },
+        { name: "空港新城", dist: 4900, exp: false, plats: 2 },
+        { name: "飛灣機場", dist: 5200, exp: true, plats: 4 },
+        { name: "翡翠花園", dist: 3200, exp: false, plats: 2 },
+        { name: "紫荊苑", dist: 9600, exp: false, plats: 4 },
+        { name: "御景新村", dist: 9000, exp: false, plats: 2 },
+        { name: "自然保育中心", dist: 1800, exp: false, plats: 2 },
+        { name: "綾路北站", dist: 1200, exp: true, plats: 4 },
+        { name: "全京大道", dist: 0, exp: false, plats: 2 }
+    ];
+
+    const PHY = { MASS: 180000, MAX_TRAC: 185000, MAX_BRK: 240000, AERO: 6.0, ROLL: 2000, G: 9.8 };
+    const CIRCUMFERENCE = 502; 
+
+    let state = {
+        active: false,
+        v: 0, d: 0, 
+        p: 0, b: 4, 
+        door: true, doorClosing: false, doorTimer: 0,
+        route: [], idx: 0, stops: 0,
+        type: 'local', dir: 'down',
+        lastT: 0,
+        atpLimit: 120, targetLimit: 120, grade: 0,
+        timerInt: null
+    };
+
+    let sndWarn;
+    try { sndWarn = new Audio('warning.m4a'); sndWarn.volume = 1.0; } catch(e){}
+
+    const ui = {
+        spd: document.getElementById('ui-speed'),
+        rSpd: document.getElementById('gauge-speed'),
+        rLim: document.getElementById('gauge-limit'),
+        dist: document.getElementById('ui-dist'),
+        gaugeDot: document.getElementById('stop-gauge-dot'),
+        hPwr: document.getElementById('handle-pwr'),
+        hBrk: document.getElementById('handle-brk'),
+        bg: document.getElementById('city-bg'),
+        slp: document.getElementById('sleeper'),
+        sign: document.getElementById('station-sign'),
+        plat: document.getElementById('platform-obj'),
+        mark: document.getElementById('stop-marker'),
+        msg: document.getElementById('msg-center'),
+        door: document.getElementById('ui-door'),
+        curr: document.getElementById('ui-curr'),
+        next: document.getElementById('ui-next'),
+        bc: document.getElementById('ui-bc'),
+        lim: document.getElementById('ui-limit'),
+        grad: document.getElementById('ui-grad'),
+        status: document.getElementById('ui-status-monitor'),
+        lampDoor: document.getElementById('lamp-door-warn'),
+        lampAtp: document.getElementById('lamp-atp'),
+        menu: document.getElementById('menu-box'),
+        resBox: document.getElementById('result-box'),
+        overlay: document.getElementById('overlay')
+    };
+
+    window.onload = () => {
+        const sel = document.getElementById('start-sel');
+        STATIONS.forEach((s, i) => {
+            let o = document.createElement('option');
+            o.value = i; o.innerText = s.name;
+            sel.appendChild(o);
+        });
+        window.addEventListener('keydown', handleKey);
+        window.focus();
+    };
+
+    function initGame() {
+        const sIdx = parseInt(document.getElementById('start-sel').value);
+        state.dir = document.getElementById('dir-sel').value;
+        state.type = document.getElementById('type-sel').value;
+
+        if(state.type === 'express') {
+            if(!STATIONS[sIdx].exp) return alert("此站無直達車停靠，無法發車");
+            if(STATIONS[sIdx].name === "全京大道") return alert("直達車不可從全京大道出發");
+        }
+
+        let raw = (state.dir === 'down') ? STATIONS.slice(sIdx) : [...STATIONS].reverse().slice((STATIONS.length-1)-sIdx);
+        
+        let validStops = 0;
+        for(let i=1; i < raw.length; i++) {
+            if (state.type === 'local') {
+                validStops++;
+            } else if (state.type === 'express') {
+                if (raw[i].exp) validStops++;
+            }
+            if(validStops >= 3) break;
+        }
+
+        if (validStops < 3) {
+            return alert(`剩餘停靠站不足 3 站，無法建立行程！\n(目前只有 ${validStops} 個停靠站)\n\n請嘗試更換起點、方向或改開普通車。`);
+        }
+
+        state.route = [{ name: raw[0].name, dist: 0, data: raw[0], isStop: true }];
+        let stopCounter = 0; 
+
+        for(let i=0; i<raw.length-1; i++) {
+            if(stopCounter >= 3) break; 
+
+            let cur = raw[i], nxt = raw[i+1];
+            let segmentDist = (state.dir === 'down') ? cur.dist : nxt.dist;
+            
+            let shouldStop = true;
+            if(state.type === 'express') {
+                if(!nxt.exp) shouldStop = false;
+            }
+            
+            state.route.push({ 
+                name: nxt.name, 
+                dist: segmentDist, 
+                data: nxt,
+                isStop: shouldStop 
+            });
+
+            if(shouldStop) stopCounter++;
+        }
+
+        state.active = true; state.v = 0; 
+        state.d = state.route[1].dist; 
+        state.p = 0; state.b = 4; 
+        state.door = true; state.doorClosing = false;
+        state.idx = 0; state.stops = 0;
+        state.atpLimit = 120;
+        
+        ui.menu.style.display = 'none';
+        ui.overlay.style.display = 'none';
+        ui.door.innerText = "OPEN"; ui.door.style.color = "var(--color-err)";
+        ui.curr.innerText = state.route[0].name;
+        
+        let nextInfo = getNextStopInfo();
+        ui.next.innerText = nextInfo.name;
+        ui.dist.innerText = Math.floor(nextInfo.dist) + " m";
+
+        setObjPos(0);
+        updateUI();
+        calcEnv(0); 
+        state.lastT = performance.now();
+        requestAnimationFrame(loop);
+    }
+
+    function loop(now) {
+        if(!state.active) return;
+        let dt = (now - state.lastT)/1000;
+        if(dt > 0.1) dt = 0.1;
+        state.lastT = now;
+
+        calcEnv(dt);
+        updateStatus(); 
+
+        if(state.door || state.doorClosing) {
+            state.v = 0;
+        } else {
+            let traction = 0;
+            if(state.p > 0 && state.b === 0) {
+                let r = Math.abs(state.v) / (130/3.6);
+                let f = Math.max(0.65, 1 - r*0.35);
+                traction = (state.p/4) * PHY.MAX_TRAC * f;
+            }
+
+            let brakeMax = (state.b/8) * PHY.MAX_BRK;
+            let dragMag = PHY.ROLL + (PHY.AERO * state.v * state.v);
+            let dragForce = (state.v > 0) ? -dragMag : (state.v < 0 ? dragMag : 0);
+            let gradeF = PHY.MASS * PHY.G * (state.grade / 1000); 
+
+            let propelling = traction + dragForce - gradeF; 
+            let net = (state.v > 0) ? propelling - brakeMax : propelling + brakeMax;
+
+            if (Math.abs(state.v) < 0.05 && state.p === 0 && Math.abs(propelling) <= brakeMax) {
+                net = 0;      
+                state.v = 0;  
+            }
+
+            let acc = net / PHY.MASS;
+            state.v += acc * dt;
+            
+            if (Math.abs(state.grade) < 1 && Math.abs(state.v) < 0.001 && state.p === 0) state.v = 0;
+
+            let mv = state.v * dt;
+            state.d -= mv;
+
+            if (state.d < -5 && state.route[state.idx+1] && state.route[state.idx+1].isStop) {
+                gameOver("超過停車位置 5m (過站不停)", false);
+                return;
+            }
+
+            if(state.d <= 0 && state.idx < state.route.length - 1) {
+                let nextSt = state.route[state.idx+1];
+                if(!nextSt.isStop) {
+                    state.idx++;
+                    if(state.idx < state.route.length - 1) {
+                        state.d += state.route[state.idx+1].dist;
+                        showMsg(nextSt.name + " 通過");
+                        ui.curr.innerText = state.route[state.idx].name;
+                    } else {
+                        state.d = 0;
+                    }
+                }
+            }
+
+            if(state.v*3.6 > state.atpLimit + 2) {
+                gameOver("ATP OVERSPEED (超速)");
+                return;
+            }
+        }
+        updateUI(); 
+        requestAnimationFrame(loop);
+    }
+
+    // --- 物理環境計算 (v21.0：全線直達車彎道修正) ---
+    function calcEnv(dt) {
+        if(state.idx >= state.route.length-1) return;
+        
+        let curSt = state.route[state.idx];   
+        let nxtSt = state.route[state.idx+1]; 
+        let distRem = state.d;              
+        let distTrav = nxtSt.dist - state.d; 
+
+        let limit = 120;      
+        let predLimit = 120;  
+        let grade = 0;
+        let lookAheadDist = Math.abs(state.v) * 3.0; 
+
+        const applyLimitPair = (target, distToStart) => {
+            limit = applyBrakingCurve(limit, target, distToStart);
+            predLimit = applyBrakingCurve(predLimit, target, distToStart - lookAheadDist);
+        };
+
+        const TERMINALS = ["飛灣工業區", "綾路北站", "全京大道"]; 
+        const checkSwitchLimit = (stInfo) => {
+            if (TERMINALS.includes(stInfo.name)) return true;
+            if (state.type === 'local' && stInfo.data.plats >= 4) return true;
+            return false;
+        };
+
+        if (curSt.isStop && distTrav < 300) { 
+            if (checkSwitchLimit(curSt)) {
+                limit = Math.min(limit, 45); 
+                predLimit = Math.min(predLimit, 45); 
+            }
+        }
+        
+        if (nxtSt.isStop) {
+            if (checkSwitchLimit(nxtSt)) {
+                applyLimitPair(45, distRem - 300);
+            }
+        }
+
+        let pName = curSt.name; 
+        let nName = nxtSt.name; 
+
+        if (state.dir === 'down') {
+            // ==========================================
+            // 下行方向 (往 全京)
+            // ==========================================
+
+            // 1. 往 飛灣郵輪港 (進站坡度在 250m 結束)
+            if (nName === "飛灣郵輪港") {
+                if (distRem <= 1000 && distRem > 250) grade = -15; 
+                applyLimitPair(75, distRem - 600);
+            }
+
+            // 2. 往 市民廣場
+            if (nName === "市民廣場") applyLimitPair(75, distRem - 600);
+            
+            // 3. 往 飛灣公園
+            if (nName === "飛灣公園") {
+                 if (distRem > 250 && distRem <= 950) grade = 15;
+                 // 預告出站後的限速
+                 applyLimitPair(90, distRem + 800); 
+            }
+            
+            // 4. 離開 飛灣公園 (接錦湖)
+            if (pName === "飛灣公園") {
+                if (distTrav < 800) {
+                    applyLimitPair(60, 300 - distTrav);
+                    applyLimitPair(90, 800 - distTrav);
+                }
+                if (distTrav >= 800) { limit = Math.min(limit, 90); predLimit = Math.min(predLimit, 90); }
+            }
+            
+            // [新增] 5. 通過 錦湖 (下行 直達車防護)
+            // 說明：飛灣公園出站限速90，進入錦湖區間(500m)後，若不維持限速會跳回120
+            if (pName === "錦湖") {
+                limit = Math.min(limit, 90); 
+                predLimit = Math.min(predLimit, 90); 
+            }
+
+            // 6. 離開 鷺島 (出站坡度 250m 後開始)
+            if (pName === "鷺島") {
+                if (distTrav > 250 && distTrav <= 600) grade = -15;
+            }
+            
+            // 7. 往 飛灣機場
+            if (nName === "飛灣機場") applyLimitPair(90, distRem - 600);
+
+            // 8. 往 空港新城
+            if (nName === "空港新城") applyLimitPair(90, distRem - 600);
+            
+	    // 9. 離開 飛灣機場 (修正：加入速限解除與直達車邏輯)
+            if (pName === "飛灣機場") {
+                // 彎道位於出發後 300m
+                if (distTrav < 300) applyLimitPair(90, 300 - distTrav);
+                
+                // 修正：只有在 300m ~ 1000m 之間鎖定 90，超過後解除
+                if (distTrav >= 300 && distTrav < 1000) { 
+                    limit = Math.min(limit, 90); 
+                    predLimit = Math.min(predLimit, 90); 
+                }
+                
+                // 爬坡邏輯維持不變
+                if (distTrav >= 800 && distTrav < 1467) grade = 15;
+            }
+            
+            // 10. 離開 紫荊苑
+            if (pName === "紫荊苑" && distTrav > 250 && distTrav <= 600) grade = -15;
+
+        } else {
+            // ==========================================
+            // 上行方向 (往 工業區)
+            // ==========================================
+
+            // 1. 往 紫荊苑
+            if (nName === "紫荊苑" && distRem <= 800 && distRem > 250) grade = 15;
+            
+	    // 2. 往 飛灣機場 (修正：加入月台長度計算)
+            if (nName === "飛灣機場") {
+                // 題目：彎道在出發側 0.3km。
+                // 上行進站時，距離停車點 = 300m (彎道) + 175m (月台長度) = 475m
+                // 所以要在距離停車點 475m 處將速度降至 90
+                applyLimitPair(90, distRem - 475);
+                
+                // 這裡原本有爬坡邏輯，保留
+                if (distRem > 600 && distRem < 1500) grade = -15; 
+            }
+            
+            // 3. 往 空港新城 (直達車預告)
+            if (nName === "空港新城") applyLimitPair(90, distRem); 
+            
+            // 4. 離開 空港新城
+            if (pName === "空港新城" && distTrav <= 600) { 
+                limit = Math.min(limit, 90); predLimit = Math.min(predLimit, 90); 
+            }
+
+            // [新增] 5. 通過 錦湖 (上行 直達車防護)
+            // 說明：從錦湖(過站不停)到飛灣公園只有1400m。
+            // 飛灣公園前的90速限需要在 2000m 處開始預告。
+            // 1400 < 2000，所以在抵達錦湖時，就必須限制在 90 以下。
+            if (nName === "錦湖") {
+                applyLimitPair(90, distRem);
+            }
+
+            // 6. 往 鷺島
+            if (nName === "鷺島" && distRem <= 800 && distRem > 250) grade = 15;
+            
+            // 7. 往 飛灣公園
+            if (nName === "飛灣公園") {
+                applyLimitPair(90, distRem - 2000);
+                applyLimitPair(60, distRem - 600);
+            }
+            if (pName === "飛灣公園" && distTrav > 250 && distTrav <= 950) grade = -15;
+
+            // 8. 往 市民廣場 (直達車預告)
+            if (nName === "市民廣場") applyLimitPair(75, distRem);
+
+            // 9. 離開 市民廣場
+            if (pName === "市民廣場" && distTrav <= 600) { 
+                limit = Math.min(limit, 75); predLimit = Math.min(predLimit, 75); 
+            }
+            
+            // 10. 往 飛灣郵輪港 (直達車預告)
+            if (nName === "飛灣郵輪港") applyLimitPair(75, distRem); 
+
+            // 11. 離開 飛灣郵輪港
+            if (pName === "飛灣郵輪港") {
+                if (distTrav <= 600) { limit = Math.min(limit, 75); predLimit = Math.min(predLimit, 75); }
+                if (distTrav > 250 && distTrav <= 850) grade = 15; 
+            }
+        }
+
+        if (state.door || state.doorClosing) {
+            state.targetLimit = limit;
+            state.atpLimit = limit; 
+            if(ui.lampAtp) {
+                ui.rLim.classList.remove('flashing');
+                ui.lampAtp.classList.remove('warn'); ui.lampAtp.classList.remove('on');
+                ui.lampAtp.innerText = "ATP NORM";
+            }
+            return; 
+        }
+
+        state.targetLimit = limit;
+        state.grade = grade;
+        state.atpLimit = state.targetLimit; 
+
+        if (ui.lampAtp) {
+            let currentSpd = Math.abs(state.v * 3.6);
+            if (currentSpd > predLimit) { 
+                ui.rLim.classList.add('flashing');
+                ui.lampAtp.classList.add('warn');
+                ui.lampAtp.classList.remove('on');
+                ui.lampAtp.innerText = "ATP WARN";
+            } else {
+                ui.rLim.classList.remove('flashing');
+                ui.lampAtp.classList.remove('warn');
+                ui.lampAtp.classList.remove('on');
+                ui.lampAtp.innerText = "ATP NORM";
+            }
+        }
+    }
+
+    function getNextStopInfo() {
+        if (!state.route[state.idx+1]) return { name: "END", dist: 0 };
+        let totalDist = state.d;
+        let stopName = state.route[state.idx+1].name;
+        for (let i = state.idx + 1; i < state.route.length - 1; i++) {
+            let node = state.route[i];
+            if (!node.isStop) {
+                if (state.route[i+1]) {
+                    totalDist += state.route[i+1].dist;
+                    stopName = state.route[i+1].name;
+                }
+            } else {
+                break; 
+            }
+        }
+        return { name: stopName, dist: totalDist };
+    }
+
+    function inputDoor() {
+        if(state.doorClosing) return; 
+        if(state.door) {
+            state.doorClosing = true; state.doorTimer = 15;
+            if(sndWarn) { sndWarn.currentTime = 0; sndWarn.play().catch(()=>{}); }
+            ui.msg.innerText = "⚠️ 關門中: 15"; ui.msg.style.display = "block";
+            ui.lampDoor.classList.add('on');
+            if(state.timerInt) clearInterval(state.timerInt);
+            state.timerInt = setInterval(() => {
+                state.doorTimer--;
+                ui.msg.innerText = "⚠️ 關門中: " + state.doorTimer;
+                if(state.doorTimer <= 0) {
+                    clearInterval(state.timerInt);
+                    state.door = false; state.doorClosing = false;
+                    ui.lampDoor.classList.remove('on');
+                    ui.door.innerText = "CLSD"; ui.door.style.color = "var(--color-ok)";
+                    if(state.idx < state.route.length - 1) state.d = state.route[state.idx+1].dist;
+                    ui.msg.innerText = "🟢 發車！ (READY)";
+                    setTimeout(() => ui.msg.style.display = "none", 2000);
+                    updateUI(); 
+                }
+            }, 1000);
+        } else {
+            if(Math.abs(state.v) < 0.05) {
+                let distM = state.d; 
+                let err = Math.abs(distM);
+                
+                if(err > 5) { 
+                    let statusStr = distM > 0 ? "未達" : "超過";
+                    gameOver(`停車誤差過大！\n${statusStr} ${err.toFixed(2)}m\n(標準：±5m 內)`, false);
+                    return; 
+                }
+
+                let cm = Math.round(distM * 100); 
+                let resultText = "";
+                
+                if (cm > 0) {
+                    resultText = `未達 ${cm} cm`;
+                } else if (cm < 0) {
+                    resultText = `超過 ${Math.abs(cm)} cm`;
+                } else {
+                    resultText = `🔥 完美停車 0 cm 🔥`;
+                }
+
+                state.door = true;
+                ui.door.innerText = "OPEN"; ui.door.style.color = "var(--color-err)";
+                state.stops++;
+
+                if(state.idx >= state.route.length - 2) { 
+                    gameOver(`檢定通過！\n最終站誤差: ${resultText}`, true);
+                } else {
+                    state.idx++; 
+                    ui.curr.innerText = state.route[state.idx].name;
+                    let info = getNextStopInfo();
+                    ui.next.innerText = info.name;
+                    
+                    showMsg(`停靠成功\n${resultText}`);
+                    
+                    setObjPos(0); 
+                }
+            } else showMsg("行駛中無法開門");
+        }
+    }
+
+    function inputPower(delta) {
+        if(state.door || state.doorClosing) return; 
+        if(state.b > 0) return; 
+        let newP = state.p + delta;
+        if(newP > 4) newP = 4; if(newP < 0) newP = 0;
+        state.p = newP;
+        updateUI();
+    }
+
+    function inputBrake(delta) {
+        let newB = state.b + delta;
+        if(newB > 8) newB = 8; if(newB < 0) newB = 0;
+        state.b = newB;
+        if(state.b > 0) state.p = 0; 
+        updateUI();
+    }
+
+    function handleKey(e) {
+        if(!state.active) return;
+        switch(e.key.toLowerCase()) {
+            case 'a': case 'arrowleft': inputPower(1); break;
+            case 'd': case 'arrowright': inputPower(-1); break;
+            case 'w': case 'arrowup': inputBrake(1); break;
+            case 's': case 'arrowdown': inputBrake(-1); break;
+            case ' ': inputDoor(); break;
+        }
+    }
+
+    function updateStatus() {
+        let msg = "", color = "#888";
+        if(state.doorClosing) { msg=`⏳ 關門中 (${state.doorTimer})`; color="var(--color-atp)"; }
+        else if(state.door) { msg="⛔ 車門開啟 (DOOR OPEN)"; color="var(--color-err)"; }
+        else if(state.b > 0) { msg=`⛔ 煞車未鬆 (B${state.b})`; color="var(--color-err)"; }
+        else if(state.p === 0) { msg="⚪ 惰行中 (Coasting)"; color="#fff"; }
+        else { msg=`🟢 加速中 (P${state.p})`; color="var(--color-ok)"; }
+        ui.status.innerText = msg; ui.status.style.color = color; ui.status.style.borderColor = color;
+    }
+
+    function updateUI() {
+        let kph = state.v * 3.6;
+        ui.spd.innerText = Math.floor(Math.abs(kph));
+        let limPct = state.atpLimit / 140; if(limPct>1) limPct=1;
+        ui.rLim.style.strokeDasharray = `${limPct * CIRCUMFERENCE} 1000`;
+        let spdPct = Math.abs(kph) / 140; if(spdPct>1) spdPct=1;
+        ui.rSpd.style.strokeDasharray = `${spdPct * CIRCUMFERENCE} 1000`;
+
+        let nextInfo = getNextStopInfo();
+        ui.dist.innerText = Math.floor(nextInfo.dist) + " m";
+        ui.next.innerText = nextInfo.name;
+
+        let dist = state.d;
+        if (Math.abs(dist) <= 0.5) {
+            ui.gaugeDot.style.display = 'block';
+            let pct = (dist + 0.5) * 100;
+            if(pct < 0) pct = 0; if(pct > 100) pct = 100;
+            ui.gaugeDot.style.left = pct + "%";
+        } else {
+            ui.gaugeDot.style.display = 'none';
+        }
+
+        ui.bc.innerText = ((state.b/8)*4.5).toFixed(1);
+        ui.lim.innerText = Math.floor(state.atpLimit);
+        ui.grad.innerText = state.grade + "‰";
+        
+        if(state.grade > 0) ui.grad.style.color = "var(--color-err)";
+        else if(state.grade < 0) ui.grad.style.color = "var(--color-ok)";
+        else ui.grad.style.color = "#eee";
+
+        let px = (state.v * (1/60)) * 10; 
+        moveBg(ui.slp, px);
+        moveBg(ui.bg, px * 0.1);
+        setObjPos(state.d);
+
+        ui.hPwr.style.top = (90 - state.p*20) + "%";
+        ui.hBrk.style.top = (90 - state.b*10) + "%";
+    }
+
+// 為電門軌道加入點擊事件
+document.getElementById('handle-pwr').parentElement.onclick = function(e) {
+    let rect = this.getBoundingClientRect();
+    let y = e.clientY - rect.top;
+    let pct = 1 - (y / rect.height); // 換算百分比
+    state.p = Math.round(pct * 4);
+    if(state.p < 0) state.p = 0;
+    if(state.p > 4) state.p = 4;
+    if(state.p > 0) state.b = 0; // 推進時鬆煞車
+    updateUI();
+};
+
+// 為煞車軌道加入點擊事件
+document.getElementById('handle-brk').parentElement.onclick = function(e) {
+    let rect = this.getBoundingClientRect();
+    let y = e.clientY - rect.top;
+    let pct = 1 - (y / rect.height);
+    state.b = Math.round(pct * 8);
+    if(state.b < 0) state.b = 0;
+    if(state.b > 8) state.b = 8;
+    if(state.b > 0) state.p = 0; // 煞車時斷動力
+    updateUI();
+};
+
+// 針對車門狀態燈加入點擊操作 (點擊 TCMS 區的 DOOR 也可以開關門)
+document.getElementById('ui-door').parentElement.onclick = function() {
+    inputDoor();
+};
+
+    function moveBg(el, dx) {
+        let pos = parseFloat(el.style.backgroundPositionX) || 0;
+        el.style.backgroundPositionX = (pos - dx) + "px";
+    }
+
+    function setObjPos(dist) {
+        let cx = window.innerWidth * 0.2; 
+        let off = dist * 10;
+        let pos = cx + off;
+        
+        if(dist > 3000 || dist < -1000) {
+            ui.plat.style.left = "200%"; ui.mark.style.left = "200%"; ui.sign.style.left = "200%";
+            return;
+        }
+        
+        let nextSt = state.route[state.idx+1];
+        if (nextSt && !nextSt.isStop) {
+            ui.mark.style.display = 'none';
+        } else {
+            ui.mark.style.display = 'flex';
+            ui.mark.style.left = (pos - 10) + "px"; 
+        }
+
+        ui.plat.style.left = (pos - 1750) + "px";
+        ui.sign.style.left = (pos - 800) + "px";
+
+        let showIdx = state.idx + 1;
+        if (state.door && state.route[state.idx]) {
+            showIdx = state.idx; 
+        }
+        if(state.route[showIdx]) {
+            ui.sign.innerText = state.route[showIdx].name;
+        }
+    }
+
+    function showMsg(txt) {
+        ui.msg.innerText = txt; ui.msg.style.display = 'block';
+        setTimeout(()=>ui.msg.style.display='none', 2000);
+    }
+
+    function gameOver(reason, win=false) {
+        state.active = false; clearInterval(state.timerInt);
+        ui.overlay.style.display = 'flex'; ui.menu.style.display = 'none';
+        ui.resBox.style.display = 'block';
+        ui.resBox.className = win ? "box win-box" : "box fail-box";
+        document.getElementById('res-title').innerText = win ? "檢定通過" : "檢定失敗";
+        document.getElementById('res-desc').innerText = reason;
+    }
+
+    setInterval(()=>document.getElementById('ui-clock').innerText=new Date().toLocaleTimeString('zh-TW',{hour12:false}), 1000);
+
+// 封裝拖曳處理函數
+function setupDraggable(handleId, trackId, type) {
+    const handle = document.getElementById(handleId);
+    const track = handle.parentElement;
+
+    function handleDrag(e) {
+        // 取得觸控或滑鼠位置
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const rect = track.getBoundingClientRect();
+        
+        // 計算百分比 (0.0 ~ 1.0)
+        let pct = 1 - ((clientY - rect.top) / rect.height);
+        if (pct < 0) pct = 0;
+        if (pct > 1) pct = 1;
+
+        if (type === 'power') {
+            if (state.door || state.doorClosing) return; // 開門時禁動電門
+            state.p = Math.round(pct * 4);
+            if (state.p > 0) state.b = 0; // 推電門時自動鬆煞車
+        } else if (type === 'brake') {
+            state.b = Math.round(pct * 8);
+            if (state.b > 0) state.p = 0; // 推煞車時自動斷動力
+        }
+        
+        updateUI();
+        updateStatus();
+    }
+
+    // 監聽觸控移動
+    track.addEventListener('touchstart', (e) => { e.preventDefault(); handleDrag(e); }, {passive: false});
+    track.addEventListener('touchmove', (e) => { e.preventDefault(); handleDrag(e); }, {passive: false});
+    
+    // 監聽滑鼠拖曳 (電腦版非鍵盤操作支援)
+    track.addEventListener('mousedown', (e) => {
+        handleDrag(e);
+        const onMouseMove = (me) => handleDrag(me);
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', () => {
+            document.removeEventListener('mousemove', onMouseMove);
+        }, {once: true});
+    });
+}
+
+// 初始化觸控控制
+setupDraggable('handle-pwr', 'lever-track', 'power');
+setupDraggable('handle-brk', 'lever-track', 'brake');
+
+// 增加車門區塊點擊回饋
+document.querySelector('.panel-tcms').addEventListener('click', (e) => {
+    // 點擊 TCMS 區域任一處模擬按下車門鈕
+    if (Math.abs(state.v) < 0.1) inputDoor();
+});
+
+</script>
+</body>
+</html>

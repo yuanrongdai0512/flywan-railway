@@ -1,139 +1,25 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <title>時刻表｜飛灣鐵路公司</title>
-  <link rel="stylesheet" href="style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-</head>
-<body>
-<header class="site-header">
-  <div class="container navbar">
-    <div class="brand">
-      <span class="brand-subtitle">FLYWAN RAILWAY COMPANY</span>
-      <span class="brand-title">飛灣鐵路公司</span>
-    </div>
-    <nav class="nav-links">
-      <a href="index.html">首頁</a>
-      <a href="news.html">公告資訊</a>
-      <a href="stations.html">車站資訊</a>
-      <a href="timetable.html" class="active">時刻表</a>
-      <a href="tickets.html">票務資訊</a>
-      <a href="company.html">公司介紹</a>
-      <a href="extras.html">其他資料</a>
-      <a href="contact.html">聯絡我們</a>
-    </nav>
-  </div>
-</header>
-
-<main class="container">
-  <section>
-    <h1>列車時刻表</h1>
-    <p class="lead">
-      本頁提供飛灣鐵路列車運行時刻。<br>
-      請依出發日期（平日／假日）與行車方向（上行／下行）選擇對應表格。
-    </p>
-  </section>
-
-  <section>
-  <h2>時刻表下載 Download Timetables</h2>
-  <p>以下提供飛灣鐵路各路線之最新時刻表（PDF），可直接下載保存。</p>
-
-  <div class="grid grid-2">
-    <!-- 平日下行 -->
-    <article class="card">
-      <h3>下行時刻表</h3>
-      <p>下行方向班次表。</p>
-      <a href="down.pdf" class="btn btn-primary" download>
-        下載 PDF
-      </a>
-    </article>
-
-    <!-- 平日上行 -->
-    <article class="card">
-      <h3>上行時刻表</h3>
-      <p>上行方向班次表。</p>
-      <a href="up.pdf" class="btn btn-primary" download>
-        下載 PDF
-      </a>
-    </article>
-
-  </div>
-</section>
-
-<section>
-    <h2>線上時刻表查詢</h2>
-    <p>選擇方向與車站，快速查詢發車時間。</p>
-
-<style>
-        /* .schedule-box 維持原樣 */
-        .schedule-box { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-top: 20px; }
-        
-        /* .control-group 維持原樣 */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>捷運時刻表查詢系統</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", "Heiti TC", sans-serif; background-color: #f4f4f9; padding: 20px; color: #333; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        h1 { text-align: center; margin-bottom: 25px; color: #2c3e50; }
         .control-group { background: #eef2f7; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #dce4ec; }
-        .control-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
-        
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
         .direction-toggle { display: flex; gap: 10px; margin-bottom: 15px; }
         .dir-btn { flex: 1; padding: 12px; border: 2px solid #cbd5e0; background: #fff; cursor: pointer; border-radius: 8px; font-weight: bold; color: #666; }
         .dir-btn.active { border-color: #3498db; background-color: #ebf5fb; color: #2980b9; }
-        .schedule-box select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 15px; background: white; }
+        select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 15px; background: white; }
         button.search-btn { width: 100%; padding: 14px; background-color: #2c3e50; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
         button.search-btn:hover { background-color: #1a252f; }
-        
-        /* ========================================= */
-        /* ★ 修改重點：固定結果區域的高度並加入捲軸 ★ */
-        /* ========================================= */
-/* ... 前面的樣式保持不變 ... */
-
-    /* 1. 設定主容器：讓它變成上下排列的彈性盒子，且外層不准捲動 */
-    #resultArea {
-        height: 400px;           /* 固定總高度 */
-        background-color: #fff;
-        border: 1px solid #eee;
-        border-radius: 6px;
-        padding: 10px;
-        
-        /* 關鍵設定：使用 Flexbox 佈局 */
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;        /* 禁止整個區域捲動，只讓內部表格捲動 */
-    }
-
-    /* 2. 新增：專門包裹表格的捲動區域 */
-    .table-scroll-wrapper {
-        flex: 1;                 /* 自動填滿剩餘高度 */
-        overflow-y: auto;        /* 只有這裡可以垂直捲動 */
-        margin-top: 10px;        /* 與上方標題保持一點距離 */
-    }
-
-    /* 3. 設定藍色標題列：固定在捲動區域的最頂端 */
-    .schedule-table th { 
-        position: sticky; 
-        top: 0;                  /* 黏在 .table-scroll-wrapper 的頂部 */
-        
-        background-color: #34495e; 
-        color: white; 
-        z-index: 10;             /* 確保浮在資料上方 */
-        box-shadow: 0 1px 0 #34495e;
-        
-        font-weight: normal; 
-        padding: 12px 15px; 
-        text-align: left; 
-    }
-
-    /* 修正標題文字樣式，確保不會被壓縮 */
-    #resultArea h3 {
-        margin: 0;
-        padding: 5px 0;
-        flex-shrink: 0;          /* 禁止標題被壓縮不見 */
-    }
-
-    /* ... 其他樣式保持不變 ... */
-        /* 以下維持原樣 */
-        .schedule-table { width: 100%; border-collapse: collapse; margin-top: 0; /* 修改: 上方間距交給 padding 處理 */ }
-        .schedule-table th, .schedule-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
-        .schedule-table th { background-color: #34495e; color: white; font-weight: normal; }
-        .schedule-table tr:nth-child(even) { background-color: #f8f9fa; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #34495e; color: white; font-weight: normal; }
+        tr:nth-child(even) { background-color: #f8f9fa; }
         .time-display { font-family: Consolas, monospace; font-size: 1.25rem; font-weight: bold; color: #2c3e50; }
         .tag { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.85rem; color: white; min-width: 50px; text-align: center; }
         .tag-local { background-color: #95a5a6; }
@@ -142,72 +28,11 @@
         .tag-express { background-color: #8e44ad; }
         .status-msg { text-align: center; color: #e74c3c; font-weight: bold; margin-top: 10px; }
     </style>
-
-    <div class="schedule-box">
-        <div class="control-group">
-            <label>1. 行車方向</label>
-            <div class="direction-toggle">
-                <button class="dir-btn active" onclick="switchDirection('down')" id="btnDown">下行 (往 全京大道)</button>
-                <button class="dir-btn" onclick="switchDirection('up')" id="btnUp">上行 (往 飛灣工業區)</button>
-            </div>
-
-            <label>2. 出發車站</label>
-            <select id="stationSelect"><option value="">正在載入資料...</option></select>
-            <button class="search-btn" id="searchBtn" onclick="searchSchedule()">查詢發車時間</button>
-            <div id="msg" class="status-msg"></div>
-        </div>
-        <div id="resultArea"></div>
-    </div>
-  </section>
-
-  <section>
-    <h2>列車種別與停靠概念示意</h2>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-        <tr>
-          <th>種別</th>
-          <th>停靠站說明</th>
-          <th>備註</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>普通</td>
-          <td>飛灣工業區到全京大道各站皆停，部分列車僅行駛到飛灣公園</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>通勤快速</td>
-          <td>飛灣工業區到飛灣公園各站皆停、飛灣機場、綾路北站、全京大道</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>機場快速</td>
-          <td>飛灣工業區、飛灣郵輪港、飛灣新站、飛灣公園、飛灣機場、綾路北站</td>
-          <td>設有商務車廂及行李車廂</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="meta">
-      註：實際停靠站資訊，依照本公司公告時刻表為主。
-    </p>
-  </section>
-</main>
-
-<footer class="site-footer">
-  <div class="container">
-    <p>本網站及「飛灣鐵路公司」為虛構設定，僅供娛樂與創作使用。</p>
-  </div>
-</footer>
-</body>
-<script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script>
 // ---------------------------------------------------------
-// 1. CSV 資料區 (這裡請貼上 schedule.html 中完整的 upCsvContent 與 downCsvContent)
+// 1. 請將 up.csv (上行) 的完整內容貼在下面兩個 ` 符號中間
 // ---------------------------------------------------------
-
-// 注意：為了篇幅，這裡我用變數名稱代表，實際操作時請將您原本檔案裡長長的 CSV 字串完整貼過來
 const upCsvContent = `
 列車番号,,1002,102,1004,104,1006,106,1008,3002,108,1010,2002,3004,110,1012,2004,7002,3006,112,1014,2006,7004,3008,114,1016,2008,7006,3010,116,1018,2010,7008
 運用番号,,C14,E04,C15,E05,C17,E07,C19,C20,E06,51/C12,C21,C56,E03,C18,C22,C55,C23,E01,C16,C02,C52,C04,E02,C13,C05,C53,C07,E04,12/C51,C8,C54
@@ -851,6 +676,10 @@ const upCsvContent = `
 考",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 `;
 
+
+// ---------------------------------------------------------
+// 2. 請將 down.csv (下行) 的完整內容貼在下面兩個 ` 符號中間
+// ---------------------------------------------------------
 const downCsvContent = `
 列車番号,,1001,101,1003,1005,103,1007,105,1009,107,1011,109,2001,7001,1013,3001,111,2003,7003,1015,3003,113,2005,7005,1017,3005,115,2007,7007,1019,3007,117
 運用番号,,C18,E06,C16,C13,E03,12/C51,E01,C01,E02,C14,E04,C02,C15,C03,C04,E05,C05,C17,C06,C07,E07,C8,C19,C09,C10,E06,51/C12,C20,C21,C11,E03
@@ -1498,9 +1327,33 @@ const downCsvContent = `
 備考,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 `;
 
-// ---------------------------------------------------------
-// 2. 程式邏輯 (這部分稍微修改了 CSS 選擇器以符合新樣式)
-// ---------------------------------------------------------
+
+</script>
+</head>
+<body>
+
+
+<div class="container">
+    <h1>捷運時刻表查詢</h1>
+    
+    <div class="control-group">
+        <label>1. 行車方向</label>
+        <div class="direction-toggle">
+            <button class="dir-btn active" onclick="switchDirection('down')" id="btnDown">下行 (往 全京大道)</button>
+            <button class="dir-btn" onclick="switchDirection('up')" id="btnUp">上行 (往 飛灣工業區)</button>
+        </div>
+
+
+        <label>2. 出發車站</label>
+        <select id="stationSelect"><option value="">正在載入資料...</option></select>
+        <button class="search-btn" id="searchBtn" onclick="searchSchedule()">查詢發車時間</button>
+        <div id="msg" class="status-msg"></div>
+    </div>
+    <div id="resultArea"></div>
+</div>
+
+
+<script>
     const allStations = [
         "飛灣工業區", "飛灣港", "物流中心", "飛灣郵輪港", "濱江商務區", 
         "市民廣場", "文化中心", "飛灣新站", "科創園", "飛灣學區", 
@@ -1508,26 +1361,23 @@ const downCsvContent = `
         "飛灣機場", "翡翠花園", "紫荊苑", "御景新村", "自然保育中心", 
         "綾路北站", "全京大道"
     ];
-    
+    const stationMapping = { "翡翠新城": "翡翠花園" };
+
+
     let scheduleData = { up: {}, down: {} };
     let currentDirection = 'down'; 
 
-    // 使用 window.onload 確保 HTML 元素都存在
+
     window.onload = function() {
         if (typeof upCsvContent === 'undefined' || typeof downCsvContent === 'undefined') {
-            document.getElementById('msg').innerHTML = "資料載入錯誤";
+            document.getElementById('msg').innerHTML = "錯誤：找不到 schedule.js";
             return;
         }
-        // 確保 PapaParse 已載入
-        if (typeof Papa === 'undefined') {
-            document.getElementById('msg').innerHTML = "解析庫載入失敗";
-            return;
-        }
-
         parseCsvData('up', upCsvContent);
         parseCsvData('down', downCsvContent);
         switchDirection('down'); 
     };
+
 
     function switchDirection(dir) {
         currentDirection = dir;
@@ -1536,6 +1386,7 @@ const downCsvContent = `
         document.getElementById('resultArea').innerHTML = "";
         updateStationList();
     }
+
 
     function updateStationList() {
         const select = document.getElementById('stationSelect');
@@ -1555,22 +1406,27 @@ const downCsvContent = `
         });
     }
 
+
     function parseCsvData(direction, rawCsv) {
         const results = Papa.parse(rawCsv, { header: false, skipEmptyLines: true });
         const data = results.data;
         let processed = {};
         allStations.forEach(s => processed[s] = []);
 
+
         let currentTrainNos = null;
         let currentTrainTypes = null;
+
 
         for (let i = 0; i < data.length; i++) {
             let row = data[i];
             let firstCell = row[0] ? row[0].toString().trim() : "";
 
+
             if (firstCell.includes("列車番号")) { currentTrainNos = row; continue; }
             if (firstCell.includes("列車種別")) { currentTrainTypes = row; continue; }
             if (!currentTrainNos || !currentTrainTypes) continue;
+
 
             let matchedStation = null;
             for (let s of allStations) {
@@ -1580,11 +1436,14 @@ const downCsvContent = `
                 }
             }
 
+
             if (matchedStation) {
                 let timeRow = row;
                 let nextRowIndex = i + 1; 
                 let isStandardDepartureRow = false;
 
+
+                // 檢查是否有獨立的 "発" 行
                 let nextRow = data[i+1];
                 if (nextRow) {
                     let n1 = nextRow[0] ? nextRow[0].toString().trim() : "";
@@ -1596,31 +1455,44 @@ const downCsvContent = `
                     }
                 }
 
+
                 let nextStationRow = data[nextRowIndex];
                 
                 for (let col = 2; col < timeRow.length; col++) {
                     let rawTime = timeRow[col];
                     if (!isValidTime(rawTime)) continue;
 
+
                     let finalTime = rawTime;
                     
+                    // 特殊邏輯：如果這不是標準的發車行 (即 timeRow 是 "着" 到達行)
+                    // 且下一行 (nextStationRow) 的格子裡有換行符號 "XX\nYY"
+                    // 則 XX 通常代表當前車站的發車時間 (綾路北站深夜班次修正)
                     if (!isStandardDepartureRow && nextStationRow) {
                          let nextCell = nextStationRow[col] ? nextStationRow[col].toString().trim() : "";
                          if (nextCell.includes("\n")) {
+                             // 抓取換行符號前的時間，視為當前車站的發車時間
                              finalTime = nextCell.split("\n")[0];
                          } else {
+                             // 一般情況：處理單格換行 (着\n発) -> 取最後一個
                              if (finalTime.includes("\n")) finalTime = finalTime.split("\n").pop();
                          }
                     } else {
+                         // 標準處理
                          if (finalTime.includes("\n")) finalTime = finalTime.split("\n").pop();
                     }
                     
                     finalTime = finalTime.trim();
                     if (!isValidTime(finalTime)) continue;
 
+
+                    // 檢查下一站有效性
+                    // 注意：如果我們剛剛用了 nextStationRow 的上半部作為發車時間，
+                    // 那 nextStationRow 的下半部其實就是下一站到達時間，這代表有車，不用過濾
                     let isNextValid = true;
                     if (nextStationRow) {
                         let nextTime = nextStationRow[col] ? nextStationRow[col].toString().trim() : "";
+                        // 如果 nextTime 被用來借位當發車時間 (有\n)，那代表下一站肯定有效
                         if (!nextTime.includes("\n")) {
                              if (nextTime === "" || nextTime === "・・" || nextTime === "====" || nextTime === "----") {
                                 if (!/\d/.test(nextTime) && nextTime !== "ﾚ" ) { 
@@ -1631,12 +1503,17 @@ const downCsvContent = `
                     }
                     if(!isNextValid) continue;
 
+
+                    // --- 尋找終點站邏輯 ---
                     let destination = "未知";
+                    let currentStationIdx = allStations.indexOf(matchedStation);
+                    
                     for(let r = nextRowIndex; r < Math.min(i + 30, data.length); r++) {
                         let checkRow = data[r];
                         if(!checkRow) continue;
                         let cell0 = checkRow[0] ? checkRow[0].toString().trim() : "";
                         if(cell0.includes("列車番号") || cell0.includes("運用番号")) break;
+
 
                         let checkTime = checkRow[col] ? checkRow[col].toString().trim() : "";
                         let rowStation = null;
@@ -1655,6 +1532,7 @@ const downCsvContent = `
                         }
                     }
 
+
                     processed[matchedStation].push({
                         time: finalTime,
                         trainNo: currentTrainNos[col] || "-",
@@ -1665,17 +1543,20 @@ const downCsvContent = `
             }
         }
 
+
         for (let s in processed) {
             processed[s].sort((a, b) => parseTime(a.time) - parseTime(b.time));
         }
         scheduleData[direction] = processed;
     }
 
+
     function isValidTime(t) {
         if (!t) return false;
         t = t.toString().trim();
         return /\d/.test(t) && !["・・","----","ﾚ","NaN","====","="].includes(t);
     }
+
 
     function parseTime(t) {
         let parts = t.split(":");
@@ -1686,28 +1567,23 @@ const downCsvContent = `
         return h * 60 + m;
     }
 
-function searchSchedule() {
+
+    function searchSchedule() {
         const station = document.getElementById('stationSelect').value;
         if (!station) { alert("請選擇車站"); return; }
         const list = scheduleData[currentDirection][station];
         const resDiv = document.getElementById('resultArea');
         const dirText = currentDirection === 'up' ? "上行 (往 飛灣工業區)" : "下行 (往 全京大道)";
 
+
         if (!list || list.length === 0) {
             resDiv.innerHTML = `<p style="text-align:center; color:#888; padding:20px;">此方向無【${station}】發車資料。</p>`;
             return;
         }
 
-        // ★★★ 修改重點開始 ★★★
-        
-        // 1. 產生標題 (這是固定不動的)
+
         let html = `<h3>${station} 發車時刻表 <small style="color:#666;">(${dirText})</small></h3>`;
-        
-        // 2. 加入捲動容器 .table-scroll-wrapper (這是 CSS 中設定 overflow-y: auto 的地方)
-        html += `<div class="table-scroll-wrapper">`; 
-        
-        html += `<table class="schedule-table"><thead><tr><th width="25%">時間</th><th width="25%">車種</th><th width="25%">目的地</th><th width="25%">車次</th></tr></thead><tbody>`;
-        
+        html += `<table><thead><tr><th width="25%">時間</th><th width="25%">車種</th><th width="25%">目的地</th><th width="25%">車次</th></tr></thead><tbody>`;
         list.forEach(item => {
             let cls = "tag-express";
             if (item.type.includes("普通")) cls = "tag-local";
@@ -1721,13 +1597,11 @@ function searchSchedule() {
                 <td>${item.trainNo}</td>
             </tr>`;
         });
-        
         html += `</tbody></table>`;
-        html += `</div>`; // 記得關閉捲動容器的 div
-        
-        // ★★★ 修改重點結束 ★★★
-
         resDiv.innerHTML = html;
     }
 </script>
+
+
+</body>
 </html>

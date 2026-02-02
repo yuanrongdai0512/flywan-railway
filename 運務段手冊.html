@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>飛灣鐵路運務段 標準作業手冊 (完整版)</title>
+    <style>
+        /* A4 列印設定 - 參照工務段手冊樣式 */
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+        }
+        
+        body {
+            font-family: "PMingLiU", "Times New Roman", serif;
+            line-height: 1.6;
+            color: #000;
+            background: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+            position: relative;
+            page-break-after: always;
+        }
+
+        @media print {
+            body { background: none; margin: 0; padding: 0; }
+            .page { width: 100%; margin: 0; box-shadow: none; page-break-after: always; }
+        }
+
+        /* 標題與內文樣式 */
+        h1 { font-size: 26pt; text-align: center; margin-bottom: 40px; font-weight: 900; font-family: "Microsoft JhengHei", sans-serif; }
+        h2 { font-size: 20pt; border-bottom: 3px double #000; padding-bottom: 10px; margin-top: 30px; font-family: "Microsoft JhengHei", sans-serif; }
+        /* 運務段改用深藍色 (#003366) 以示區別 */
+        h3 { font-size: 16pt; margin-top: 25px; background-color: #f4f4f4; padding: 8px; border-left: 8px solid #003366; font-family: "Microsoft JhengHei", sans-serif; }
+        h4 { font-size: 13pt; margin-top: 20px; font-weight: bold; text-decoration: underline; }
+        
+        p, li { font-size: 11pt; text-align: justify; margin-bottom: 8px; }
+        ul, ol { margin-left: 20px; padding-left: 0; }
+        li { margin-bottom: 5px; }
+
+        /* 表格 */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 10pt; page-break-inside: avoid; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #e8e8e8; text-align: center; font-weight: bold; }
+
+        /* 警告框與備註 */
+        .warning-box { border: 2px solid red; padding: 15px; margin: 15px 0; page-break-inside: avoid; }
+        .warning-title { color: red; font-weight: bold; font-size: 12pt; display: block; margin-bottom: 5px; }
+        
+        .note-box { background-color: #e3f2fd; border-left: 4px solid #0277bd; padding: 10px; margin: 10px 0; font-style: italic; font-size: 10pt; }
+
+        /* 檢查表樣式 */
+        .checklist { border: 1px solid #000; padding: 5px; margin: 10px 0; font-family: "Consolas", monospace; }
+        .cl-row { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px dashed #ccc; }
+        .cl-row:last-child { border-bottom: none; }
+        .cl-item { font-weight: bold; }
+        .cl-check { font-weight: bold; }
+
+        /* 頁尾 */
+        .footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            right: 20mm;
+            text-align: center;
+            font-size: 9pt;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+    <div style="margin-top: 50px; font-size: 48pt; font-weight: 900; line-height: 1.2;">
+        車站運務管理<br>
+        標準作業手冊
+    </div>
+    <div style="font-size: 24pt; margin-top: 20px; color: #555;">
+        STATION OPERATIONS MANUAL (SOM)
+    </div>
+    
+    <div style="margin: 80px auto; width: 60%; border: 5px solid #003366; padding: 40px;">
+        <p style="font-size: 16pt;"><strong>適用範圍：</strong> 各級車站 / 車站控制室</p>
+        <p style="font-size: 16pt;"><strong>文件編號：</strong> OPS-STN-2026-V2.0</p>
+        <p style="font-size: 16pt;"><strong>修訂日期：</strong> 2026/01/28</p>
+    </div>
+
+    <div style="margin-top: auto; margin-bottom: 50px;">
+        <p><strong>飛灣鐵路股份有限公司 運務處</strong></p>
+        <p>FEIWAN RAILWAY CO., OPERATIONS DEPT.</p>
+    </div>
+</div>
+
+<div class="page">
+    <h1>文件控制與修訂記錄</h1>
+
+    <h3>版權聲明</h3>
+    <p>本手冊內容屬飛灣鐵路股份有限公司（Feiwan Railway Co.）運務處所有。本手冊詳述車站營運、票務處理、行車監視及緊急應變程序，僅供內部合格站務人員使用，未經書面許可禁止複製或外流。</p>
+
+    <h3>修訂記錄 (Revision History)</h3>
+    <table>
+        <tr>
+            <th width="15%">版本</th>
+            <th width="20%">日期</th>
+            <th width="20%">修訂者</th>
+            <th width="45%">說明</th>
+        </tr>
+        <tr>
+            <td>V 1.0</td>
+            <td>2024/01/01</td>
+            <td>運務處</td>
+            <td>初版發行</td>
+        </tr>
+        <tr>
+            <td>V 1.5</td>
+            <td>2025/06/20</td>
+            <td>安全室</td>
+            <td>新增月台門(PSD)故障排除程序</td>
+        </tr>
+        <tr>
+            <td>V 2.0</td>
+            <td>2026/01/28</td>
+            <td>運務長</td>
+            <td>配合新式自動收費系統(AFC)上線修訂</td>
+        </tr>
+    </table>
+
+    <h3>適用人員資格</h3>
+    <ul>
+        <li>飛灣鐵路公司在職之站長 (Station Master)。</li>
+        <li>飛灣鐵路公司在職之站務員 (Station Staff)。</li>
+        <li>新進人員需完成 120 小時職前訓練並通過考核。</li>
+    </ul>
+
+    <div class="footer">Page i</div>
+</div>
+
+<div class="page">
+    <h1>目 錄 (Table of Contents)</h1>
+    <ul style="list-style: none;">
+        <li><strong>第一章 總則與組織職責</strong> ................................................. 1</li>
+        <li>　1.1 運務核心價值與服務守則 ............................................ 1</li>
+        <li>　1.2 車站組織架構與職掌 ................................................... 2</li>
+        <li><strong>第二章 車站設施與設備</strong> .................................................... 3</li>
+        <li>　2.1 自動收費系統 (AFC) ...................................................... 3</li>
+        <li>　2.2 車站控制室 (Station Control Room) ................................ 4</li>
+        <li>　2.3 月台與軌道監控設備 (PSD/CCTV) ................................. 5</li>
+        <li>　2.4 消防與安全設備 (Fire Safety) ........................................ 6</li>
+        <li><strong>第三章 日常營運 SOP</strong> ....................................................... 7</li>
+        <li>　3.1 車站啟閉作業程序 ......................................................... 7</li>
+        <li>　3.2 站務員巡檢作業 ............................................................ 8</li>
+        <li>　3.3 票務與補票作業 ............................................................ 9</li>
+        <li>　3.4 現金營收處理 (Cash Handling) .................................... 10</li>
+        <li>　3.5 遺失物處理程序 ............................................................ 11</li>
+        <li>　3.6 旅客投訴與糾紛處理 .................................................... 12</li>
+        <li><strong>第四章 行車監視與月台勤務</strong> ............................................. 13</li>
+        <li>　4.1 列車進出站監視 (Watch Keeping) ................................. 13</li>
+        <li>　4.2 指差確認 (Point and Call) ............................................. 14</li>
+        <li>　4.3 行動不便旅客服務 (Wheelchair Service) ...................... 15</li>
+        <li>　4.4 人潮管制 (Crowd Control) ............................................. 16</li>
+        <li><strong>第五章 緊急應變 (Emergency)</strong> ........................................... 17</li>
+        <li>　5.1 火災疏散程序 ................................................................ 17</li>
+        <li>　5.2 旅客落軌與軌道異物 .................................................... 18</li>
+        <li>　5.3 傷病患急救與維安事件 ................................................ 19</li>
+        <li><strong>第六章 附錄</strong> ........................................................................ 20</li>
+        <li>　6.1 車站巡邏檢核表 ............................................................ 20</li>
+    </ul>
+    <div class="footer">Page ii</div>
+</div>
+
+<div class="page">
+    <h1>第一章 總則與組織職責</h1>
+
+    <h3>1.1 運務核心價值與服務守則</h3>
+    <p>運務段作為直接面對旅客的第一線單位，秉持「安全 (Safety)、準點 (Punctuality)、服務 (Service)」之核心價值。所有作業應以安全為最高指導原則。</p>
+
+    <div class="warning-box">
+        <span class="warning-title">安全鐵律 (Safety Rules)：</span>
+        1. 嚴禁背對行進中的列車。<br>
+        2. 進入軌道區前必須確認斷電並獲得行控中心 (OCC) 授權。<br>
+        3. 執行行車監視時，嚴禁使用手機或聊天。
+    </div>
+
+    <h4>服務三原則 (3A Policy)</h4>
+    <ul>
+        <li><strong>Attitude (態度)：</strong> 保持微笑，主動眼神接觸。</li>
+        <li><strong>Action (行動)：</strong> 發現旅客有困難時，主動詢問「需要幫忙嗎？」。</li>
+        <li><strong>Accuracy (準確)：</strong> 提供正確的乘車與票務資訊。</li>
+    </ul>
+
+    <div class="footer">Page 1</div>
+</div>
+
+<div class="page">
+    <h3>1.2 車站組織架構與職掌</h3>
+    <p>本公司車站採「站長責任制」，各級人員職責如下：</p>
+    
+    <table>
+        <tr>
+            <th width="25%">職稱</th>
+            <th width="75%">主要職責</th>
+        </tr>
+        <tr>
+            <td><strong>站長 (Station Master)</strong></td>
+            <td>
+                1. 車站最高指揮官，負責全站安全與營運管理。<br>
+                2. 緊急事故之現場指揮官 (OSC)。<br>
+                3. 人員排班、考核及教育訓練。<br>
+                4. 現金營收結帳確認。
+            </td>
+        </tr>
+        <tr>
+            <td><strong>副站長 / 值班站長</strong></td>
+            <td>
+                1. 襄助站長處理站務。<br>
+                2. 負責當班行車運轉監視與通報。<br>
+                3. 監督票務作業與設備報修。
+            </td>
+        </tr>
+        <tr>
+            <td><strong>站務員 (Station Staff)</strong></td>
+            <td>
+                <strong>[詢問處 PAO]</strong> 售票、補票、遺失物處理、廣播。<br>
+                <strong>[月台 Platform]</strong> 行車監視、旅客引導、身障服務。<br>
+                <strong>[巡檢 Patrol]</strong> 車站環境巡視、設備檢查。
+            </td>
+        </tr>
+    </table>
+
+    <div class="note-box">
+        註：各站應於每班次勤前教育 (Briefing) 時，明確指派當班人員之崗位與任務。
+    </div>
+
+    <div class="footer">Page 2</div>
+</div>
+
+<div class="page">
+    <h1>第二章 車站設施與設備</h1>
+
+    <h3>2.1 自動收費系統 (AFC)</h3>
+    <p>Automatic Fare Collection 系統是車站營收的核心，包含售票機、驗票閘門及票務工作站。</p>
+    
+    
+    <h4>A. 自動售票機 (TVM)</h4>
+    <ul>
+        <li><strong>功能：</strong> 販售單程票 (Token) 及電子票證加值。</li>
+        <li><strong>日常維護：</strong>
+            <ul>
+                <li>更換收據熱感應紙。</li>
+                <li>補充找零硬幣與紙鈔。</li>
+                <li>排除卡幣或卡票故障 (需由雙人會同開啟)。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h4>B. 驗票閘門 (AGM)</h4>
+    <p>分為一般通道與無障礙寬閘門。</p>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 擋板 (Flap)</span><span class="cl-check">開合順暢無異音</span></div>
+        <div class="cl-row"><span class="cl-item">2. 顯示器</span><span class="cl-check">燈號顯示正常 (綠色通行/紅色禁止)</span></div>
+        <div class="cl-row"><span class="cl-item">3. 感應區</span><span class="cl-check">無異物遮蔽或塗鴉</span></div>
+    </div>
+
+    <div class="footer">Page 3</div>
+</div>
+
+<div class="page">
+    <h3>2.2 車站控制室 (Station Control Room)</h3>
+    <p>車站的大腦，通常與詢問處 (PAO) 合併設置，負責全站監控。</p>
+
+    
+    <h4>主要設備介紹：</h4>
+    <table>
+        <tr><th width="30%">設備名稱</th><th>功能說明</th></tr>
+        <tr><td><strong>綜合監控工作站 (SWS)</strong></td><td>監控電力、照明、空調、電扶梯狀態之圖控系統。</td></tr>
+        <tr><td><strong>行車控制盤 (LCP)</strong></td><td>顯示軌道佔用情形，具備緊急扣車鈕 (Hold) 與緊急斷電鈕 (ESB)。</td></tr>
+        <tr><td><strong>廣播系統 (PA)</strong></td><td>可分區對月台、大廳進行廣播。</td></tr>
+        <tr><td><strong>無線電 (Radio)</strong></td><td>與行控中心 (OCC)、司機員及站務員通訊。</td></tr>
+    </table>
+
+    <div class="warning-box">
+        <strong>門禁管制：</strong> 控制室涉及行車安全與現金存放，非相關人員嚴禁進入。進出須填寫「人員進出登記表」。
+    </div>
+
+    <div class="footer">Page 4</div>
+</div>
+
+<div class="page">
+    <h3>2.3 月台與軌道監控設備</h3>
+
+    <h4>A. 月台門系統 (PSD - Platform Screen Doors)</h4>
+    <p>用於隔離月台與軌道，防止人員落軌及提升空調效率。</p>
+    <ul>
+        <li><strong>自動模式：</strong> 列車停妥後，隨車門同步開啟。</li>
+        <li><strong>手動模式：</strong> 當連動失效時，需由站務員操作「就地控制盤 (PSL)」開關門。</li>
+        <li><strong>互鎖解除 (Bypass)：</strong> 若月台門故障無法關閉，需切換此開關，讓列車能獲得速度碼離站。</li>
+    </ul>
+
+    <h4>B. 閉路電視 (CCTV)</h4>
+    <p>月台端牆設有監視螢幕，供站務員與司機員確認旅客上下車狀況，特別是彎道視線死角。</p>
+
+    <h4>C. 緊急停車按鈕 (ESB)</h4>
+    <p>位於月台柱子上，按下後會切斷軌道電力並發出警報，使進站列車緊急煞車。</p>
+
+    <div class="footer">Page 5</div>
+</div>
+
+<div class="page">
+    <h3>2.4 消防與安全設備</h3>
+    <p>車站屬於地下或封閉空間，消防安全至關重要。</p>
+
+    <h4>A. 滅火設備</h4>
+    <ul>
+        <li><strong>乾粉滅火器：</strong> 配置於月台、大廳各處，適用一般火災。</li>
+        <li><strong>二氧化碳滅火器：</strong> 配置於機房、電氣室，避免損壞精密設備。</li>
+        <li><strong>室內消防栓：</strong> 需兩人操作，一人持瞄子，一人開水閥。</li>
+    </ul>
+
+    <h4>B. 自動體外心臟電擊去顫器 (AED)</h4>
+    <p>設置於詢問處旁顯眼處。所有站務人員每年需接受 CPR+AED 訓練。</p>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 指示燈</span><span class="cl-check">顯示綠燈 (正常)</span></div>
+        <div class="cl-row"><span class="cl-item">2. 耗材效期</span><span class="cl-check">電擊貼片未過期</span></div>
+        <div class="cl-row"><span class="cl-item">3. 配件包</span><span class="cl-check">剪刀、刮刀、手套齊全</span></div>
+    </div>
+
+    <div class="footer">Page 6</div>
+</div>
+
+<div class="page">
+    <h1>第三章 日常營運 SOP</h1>
+    
+    <h3>3.1 車站啟閉作業程序</h3>
+
+    <h4>A. 開站作業 (05:30 前完成)</h4>
+    <ol>
+        <li><strong>解除保全：</strong> 早班站長解除系統設定，開啟出入口鐵捲門。</li>
+        <li><strong>開啟照明：</strong> 開啟大廳、穿堂、月台照明至營運模式。</li>
+        <li><strong>設備啟動：</strong>
+            <ul>
+                <li>啟動電扶梯與電梯，確認運轉方向正確且無異音。</li>
+                <li>開啟自動售票機 (TVM) 與驗票閘門 (AGM)。</li>
+            </ul>
+        </li>
+        <li><strong>通訊測試：</strong> 使用無線電呼叫 OCC，確認通訊正常。</li>
+        <li><strong>開站回報：</strong> 05:50 前向 OCC 回報「XX站 開站準備完畢，正常」。</li>
+    </ol>
+
+    <h4>B. 閉站作業 (末班車離站後)</h4>
+    <ol>
+        <li><strong>清車與清場：</strong> 確認末班車旅客皆已下車，並巡視廁所、角落無逗留人員。</li>
+        <li><strong>關閉設備：</strong> 停止電扶梯，關閉部分照明（留夜間保全燈）。</li>
+        <li><strong>結帳與保全：</strong> 完成營收結帳，設定紅外線保全系統。</li>
+    </ol>
+
+    <div class="footer">Page 7</div>
+</div>
+
+<div class="page">
+    <h3>3.2 站務員巡檢作業</h3>
+    <p>站務員需每 2 小時執行一次全站巡檢，並填寫紀錄表。</p>
+
+    <h4>巡檢路線規劃</h4>
+    <p>詢問處 → 大廳 → 出入口 → 公廁 → 月台層 → 機房區 → 詢問處。</p>
+
+    <h4>重點檢查項目：</h4>
+    <table style="font-size: 9pt;">
+        <tr>
+            <th width="20%">區域</th>
+            <th width="80%">檢查重點</th>
+        </tr>
+        <tr>
+            <td><strong>出入口</strong></td>
+            <td>無違規停車阻礙動線、無流動攤販、防滑條無脫落。</td>
+        </tr>
+        <tr>
+            <td><strong>大廳/穿堂</strong></td>
+            <td>PIDS 顯示正確、垃圾桶未滿溢、地板無積水。</td>
+        </tr>
+        <tr>
+            <td><strong>公廁</strong></td>
+            <td>無異味、衛生紙/洗手乳充足、緊急求救鈴功能正常。</td>
+        </tr>
+        <tr>
+            <td><strong>月台層</strong></td>
+            <td>黃線區域淨空、座椅無損壞、滅火器壓力正常。</td>
+        </tr>
+    </table>
+
+    <div class="warning-box">
+        <strong>異常回報：</strong> 發現設備故障應立即擺放「維修中」告示牌，並拍照上傳維修系統。若有立即危險（如天花板掉落、電線裸露），應立即封鎖現場。
+    </div>
+
+    <div class="footer">Page 8</div>
+</div>
+
+<div class="page">
+    <h3>3.3 票務與補票作業</h3>
+
+    <h4>A. 站務員售票機 (POM) 操作</h4>
+    <p>設置於詢問處內，用於處理票卡異常分析與補票。</p>
+    <ul>
+        <li><strong>無法出站分析：</strong> 讀取旅客票卡，確認是否為「超程」、「逾時」或「進出碼不符」。</li>
+        <li><strong>補票處理：</strong>
+            <ul>
+                <li><strong>超程：</strong> 補收差額。</li>
+                <li><strong>無票乘車/遺失票卡：</strong> 收取起站至本站最大區間票價，並加收 50% 違約金。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h4>B. 團體票處理</h4>
+    <p>受理 10 人以上團體，須填寫團體票申請單，由公務門進出。</p>
+
+    <h4>C. 退費處理</h4>
+    <p>若因系統故障導致多扣款，經查證屬實後，填寫「退費申請單」並以現金退還。</p>
+
+    <div class="footer">Page 9</div>
+</div>
+
+<div class="page">
+    <h3>3.4 現金營收處理 (Cash Handling)</h3>
+    <p>現金安全是車站管理的紅線，所有作業須在監視器下進行。</p>
+
+    <h4>A. 錢箱更換與點收</h4>
+    <ol>
+        <li><strong>更換時機：</strong> 每日交接班或機器顯示錢箱將滿時。</li>
+        <li><strong>雙人作業：</strong> 取出錢箱與點鈔過程，必須由兩人（通常為值班站長與站務員）共同執行。</li>
+        <li><strong>點鈔：</strong> 使用點鈔機核對金額，並與電腦報表比對。</li>
+        <li><strong>簽核：</strong> 填寫「營收日報表」，雙人簽名確認無誤。</li>
+    </ol>
+
+    <h4>B. 投庫與解款</h4>
+    <ul>
+        <li>將現金裝入專用解款袋，並加上一次性封籤。</li>
+        <li>鎖入站長室保險箱。</li>
+        <li>配合保全運鈔車時間，移交款項並核對封籤號碼。</li>
+    </ul>
+
+    <div class="warning-box">
+        <strong>短溢收處理：</strong> 若現金與報表不符，應立即重新點算。若仍不符，須填寫「短溢收報告單」敘明原因，嚴禁自行補貼或挪用。
+    </div>
+
+    <div class="footer">Page 10</div>
+</div>
+
+<div class="page">
+    <h3>3.5 遺失物處理程序</h3>
+
+    <h4>A. 拾獲處理</h4>
+    <ol>
+        <li><strong>檢視：</strong> 雙人見證下檢查內容物（確認有無易腐物、危險品）。</li>
+        <li><strong>建檔：</strong> 於系統登錄特徵（顏色、品牌、內容物）、拾獲地點及時間。</li>
+        <li><strong>保管：</strong> 貼上標籤，存入遺失物櫃。貴重物品（現金、3C、證件）須鎖入保險箱。</li>
+    </ol>
+
+    <h4>B. 認領程序</h4>
+    <ul>
+        <li>核對旅客身分證件。</li>
+        <li>請旅客詳細描述物品特徵或解鎖手機以證明所有權。</li>
+        <li>填寫「遺失物領據」，影印證件留存。</li>
+    </ul>
+
+    <h4>C. 移交</h4>
+    <p>超過 7 日未認領之物品，定期彙整造冊移交至公司「遺失物中心」。</p>
+
+    <div class="note-box">
+        <strong>可疑物品：</strong> 若拾獲無人看管之行李、封箱紙箱，且外觀有油漬、電線或異音，<strong>嚴禁觸碰</strong>，應立即通報鐵路警察。
+    </div>
+
+    <div class="footer">Page 11</div>
+</div>
+
+<div class="page">
+    <h3>3.6 旅客投訴與糾紛處理</h3>
+
+    <h4>A. 處理原則 (HEAT)</h4>
+    <ul>
+        <li><strong>Hear (傾聽)：</strong> 耐心聽完旅客抱怨，不插嘴。</li>
+        <li><strong>Empathize (同理)：</strong> 表示理解旅客的感受（如：「我了解這讓您很不便...」）。</li>
+        <li><strong>Apologize (致歉)：</strong> 針對造成的不便致歉（不代表承認錯誤，而是展現禮貌）。</li>
+        <li><strong>Take Action (行動)：</strong> 提出解決方案或說明後續處理方式。</li>
+    </ul>
+
+    <h4>B. 常見糾紛處置</h4>
+    <table style="font-size: 9pt;">
+        <tr><th>情境</th><th>處置方式</th></tr>
+        <tr><td><strong>逃票/違規飲食</strong></td><td>態度堅定但委婉，引用規定勸導或開立罰單。</td></tr>
+        <tr><td><strong>旅客爭吵/打架</strong></td><td>保持距離，通報保全與警察，勿強行介入肢體衝突。</td></tr>
+        <tr><td><strong>酒醉旅客</strong></td><td>若有騷擾他人或無法站立之虞，得拒絕運送。</td></tr>
+    </table>
+
+    <div class="footer">Page 12</div>
+</div>
+
+<div class="page">
+    <h1>第四章 行車監視與月台勤務</h1>
+    
+    <h3>4.1 列車進出站監視 (Watch Keeping)</h3>
+    <p>站務員應於月台指定位置執行監視，確保列車運轉安全。</p>
+
+    
+    <h4>A. 列車進站前</h4>
+    <ul>
+        <li>確認軌道無異物、黃線區內無旅客。</li>
+        <li>檢視月台門 (PSD) 是否全關。</li>
+    </ul>
+
+    <h4>B. 列車進站時</h4>
+    <ul>
+        <li>面向列車，觀察車體外觀有無異狀（如門扇開啟、冒煙）。</li>
+        <li>向司機員行舉手禮（日間）或揮動白色信號燈（夜間/地下段）。</li>
+    </ul>
+
+    <h4>C. 列車離站 (關鍵時刻)</h4>
+    <ul>
+        <li>確認車門關閉，月台門關閉。</li>
+        <li>確認車體與月台間隙無夾困旅客或衣物。</li>
+        <li>目送列車完全離開月台。</li>
+    </ul>
+
+    <div class="footer">Page 13</div>
+</div>
+
+<div class="page">
+    <h3>4.2 指差確認 (Point and Call)</h3>
+    <p>藉由「眼到、手到、口到、心到」協調動作，降低人為疏失。</p>
+
+    <h4>標準動作流程 (列車發車時)：</h4>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 聽音</span><span class="cl-check">聽到關門警示音結束</span></div>
+        <div class="cl-row"><span class="cl-item">2. 舉手</span><span class="cl-check">舉起手臂，手指車側燈</span></div>
+        <div class="cl-row"><span class="cl-item">3. 確認車燈</span><span class="cl-check">口呼：「車側燈滅！」</span></div>
+        <div class="cl-row"><span class="cl-item">4. 確認月台門</span><span class="cl-check">手指月台門，口呼：「月台門關！」</span></div>
+        <div class="cl-row"><span class="cl-item">5. 確認空隙</span><span class="cl-check">掃視月台，口呼：「空隙無人！」</span></div>
+        <div class="cl-row"><span class="cl-item">6. 號訊</span><span class="cl-check">向司機員比出「OK」手勢</span></div>
+        <div class="cl-row"><span class="cl-item">7. 目送</span><span class="cl-check">口呼：「列車離站，All Right！」</span></div>
+    </div>
+
+    <div class="footer">Page 14</div>
+</div>
+
+<div class="page">
+    <h3>4.3 行動不便旅客服務</h3>
+    <p>提供輪椅旅客 (Wheelchair User) 安全的乘車協助。</p>
+
+    <h4>作業流程：</h4>
+    <ol>
+        <li><strong>受理：</strong> 旅客於詢問處或月台提出需求。</li>
+        <li><strong>通報：</strong> 詢問旅客目的站，通報目的站安排人員接應。</li>
+        <li><strong>引導：</strong> 帶領旅客至第一節車廂（靠近司機員）或設有輪椅停靠區之車廂候車。</li>
+        <li><strong>上車協助：</strong>
+            <ul>
+                <li>舖設渡板 (Ramp)，協助輪椅上車。</li>
+                <li>確認輪椅煞車鎖定。</li>
+                <li>通知司機員：「輪椅旅客上車完畢」。</li>
+            </ul>
+        </li>
+        <li><strong>確認：</strong> 列車離站後，再次確認目的站已收到訊息。</li>
+    </ol>
+
+    <div class="note-box">
+        <strong>視障旅客：</strong> 採「問、拍、引、報」原則。主動詢問，以手背輕拍旅客手背讓其抓握手肘，引導時隨時口頭播報路況（如：前方有樓梯、準備左轉）。
+    </div>
+
+    <div class="footer">Page 15</div>
+</div>
+
+<div class="page">
+    <h3>4.4 人潮管制 (Crowd Control)</h3>
+    <p>當月台候車人數超過容量 80% 或發生大型活動、跨年時，實施三級管制。</p>
+
+    <table>
+        <tr>
+            <th width="20%">等級</th>
+            <th width="30%">管制點</th>
+            <th width="50%">執行措施</th>
+        </tr>
+        <tr>
+            <td><strong>第一級</strong></td>
+            <td><strong>月台層</strong></td>
+            <td>暫停電扶梯運轉（改為行走樓梯），站務員於梯口管制進入月台人數。</td>
+        </tr>
+        <tr>
+            <td><strong>第二級</strong></td>
+            <td><strong>驗票閘門</strong></td>
+            <td>關閉部分進站閘門，減緩旅客進站速度，廣播宣導稍候。</td>
+        </tr>
+        <tr>
+            <td><strong>第三級</strong></td>
+            <td><strong>出入口</strong></td>
+            <td>暫時關閉車站出入口鐵門，只出不進，請求警察協助站外秩序。</td>
+        </tr>
+    </table>
+
+    <div class="footer">Page 16</div>
+</div>
+
+<div class="page">
+    <h1>第五章 緊急應變 (Emergency)</h1>
+    
+    <h3>5.1 火災疏散程序</h3>
+    <p>依據「NFPA 130」及國家消防法規訂定。</p>
+
+    <h4>A. 確認火警 (Verify)</h4>
+    <ul>
+        <li>當防災盤 (Fire Panel) 警報響起，站長立即派遣站務員持滅火器與無線電前往確認。</li>
+        <li><strong>誤報：</strong> 回報 OCC，復歸防災盤。</li>
+        <li><strong>確報：</strong> 立即按下「手動火警發信機」，啟動排煙與警鈴，並回報 OCC 請求 119 支援。</li>
+    </ul>
+
+    <h4>B. 疏散執行 (Evacuation)</h4>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 閘門全開</span><span class="cl-check">站長操作「緊急釋放鈕」開啟閘門</span></div>
+        <div class="cl-row"><span class="cl-item">2. 設備管制</span><span class="cl-check">電梯停用、電扶梯停止、入站鐵門拉半</span></div>
+        <div class="cl-row"><span class="cl-item">3. 廣播引導</span><span class="cl-check">持續廣播疏散方向 (避開濃煙)</span></div>
+        <div class="cl-row"><span class="cl-item">4. 清場</span><span class="cl-check">確認廁所、盲角無人遺留</span></div>
+    </div>
+
+    <div class="footer">Page 17</div>
+</div>
+
+<div class="page">
+    <h3>5.2 旅客落軌與軌道異物</h3>
+
+    <h4>A. 旅客落軌 (Person on Track)</h4>
+    <div class="warning-box">
+        時間就是生命！若列車即將進站，首要動作是<strong>阻止列車進入</strong>。
+    </div>
+    
+    <ol>
+        <li><strong>緊急停車：</strong> 立即按下月台柱或控制室之「緊急停車鈕 (ESB)」。</li>
+        <li><strong>示警：</strong> 向列車揮舞紅色旗幟/燈光，吹急促哨音。</li>
+        <li><strong>指示：</strong> 若列車已接近無法煞停，大聲指示旅客：「趴在避車坑內！不要動！」</li>
+        <li><strong>救援：</strong> 
+            <ul>
+                <li>確認列車停妥且軌道斷電。</li>
+                <li>協助旅客爬上月台（使用備用梯）。</li>
+                <li>若受傷則通報 119。</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h4>B. 軌道異物</h4>
+    <ul>
+        <li><strong>一般物品：</strong> 於收班後斷電撿拾。</li>
+        <li><strong>危險物品 (如金屬長桿)：</strong> 申請緊急斷電後，使用絕緣夾撿拾。</li>
+    </ul>
+
+    <div class="footer">Page 18</div>
+</div>
+
+<div class="page">
+    <h3>5.3 傷病患急救與維安事件</h3>
+
+    <h4>A. 急救案件 (Code Medical)</h4>
+    <ul>
+        <li><strong>檢傷：</strong> 判斷意識、呼吸、脈搏。</li>
+        <li><strong>通報：</strong> 撥打 119，告知地點（出口幾號）、傷患狀況。</li>
+        <li><strong>處置：</strong>
+            <ul>
+                <li>無意識無呼吸：立即施行 CPR 並使用 AED。</li>
+                <li>癲癇：保護頭部，移開周邊危險物，勿強塞物品入口。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h4>B. 維安事件 (Code Police)</h4>
+    <p>包含持刀攻擊、挾持、爆裂物威脅。</p>
+    <ol>
+        <li><strong>通報：</strong> 立即通報 OCC、鐵路警察及 110。</li>
+        <li><strong>避難：</strong> 疏散周邊旅客，保持距離，切勿激怒歹徒。</li>
+        <li><strong>防禦：</strong> 利用防暴鋼叉、盾牌、滅火器進行防禦（僅在生命受威脅時）。</li>
+    </ol>
+
+    <div class="footer">Page 19</div>
+</div>
+
+<div class="page">
+    <h1>第六章 附錄</h1>
+
+    <h3>6.1 車站巡邏檢核表 (範本)</h3>
+    <div class="checklist" style="height: 500px; position: relative;">
+        <div style="text-align: center; font-weight: bold; border-bottom: 2px solid #000; padding: 10px;">
+            飛灣鐵路 車站日常巡檢紀錄表
+        </div>
+        <div style="padding: 10px;">
+            <p>車站：__________ 日期：20__/__/__ 班次：早/晚/夜</p>
+        </div>
+        
+        <table style="width: 95%; margin: 0 auto;">
+            <tr><th>時間</th><th>巡檢項目</th><th>狀態</th><th>簽名</th></tr>
+            <tr><td>09:00</td><td>出入口/大廳/廁所/月台</td><td>[ ]</td><td>________</td></tr>
+            <tr><td>11:00</td><td>出入口/大廳/廁所/月台</td><td>[ ]</td><td>________</td></tr>
+            <tr><td>13:00</td><td>出入口/大廳/廁所/月台</td><td>[ ]</td><td>________</td></tr>
+            <tr><td>15:00</td><td>出入口/大廳/廁所/月台</td><td>[ ]</td><td>________</td></tr>
+            <tr><td>17:00</td><td>出入口/大廳/廁所/月台</td><td>[ ]</td><td>________</td></tr>
+            <tr><td>19:00</td><td>出入口/大廳/廁所/月台</td><td>[ ]</td><td>________</td></tr>
+        </table>
+        
+        <div style="margin: 20px; border: 1px solid #999; height: 100px; padding: 10px;">
+            <strong>異常狀況記述與追蹤：</strong><br>
+            (例如：男廁洗手台漏水，已報修單號 R-20240101-05)
+        </div>
+        
+        <div style="text-align: right; padding: 20px;">
+            值班站長複核：____________
+        </div>
+    </div>
+
+    <div style="margin-top: 50px; text-align: center; color: #666; font-size: 10pt;">
+        <p>飛灣鐵路股份有限公司 運務處 印製</p>
+        <p>Feiwan Railway Co. Operations Dept.</p>
+        <p>SERVICE HOTLINE: 0800-123-456</p>
+    </div>
+
+    <div class="footer">Page 20 (End)</div>
+</div>
+
+</body>
+</html>

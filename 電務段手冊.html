@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>飛灣鐵路電務段 標準作業手冊 (完整版)</title>
+    <style>
+        /* A4 列印設定 - 參照工務段手冊樣式，調整配色為電務藍 */
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+        }
+        
+        body {
+            font-family: "PMingLiU", "Times New Roman", serif;
+            line-height: 1.6;
+            color: #000;
+            background: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+            position: relative;
+            page-break-after: always;
+        }
+
+        @media print {
+            body { background: none; margin: 0; padding: 0; }
+            .page { width: 100%; margin: 0; box-shadow: none; page-break-after: always; }
+        }
+
+        /* 標題與內文樣式 */
+        h1 { font-size: 26pt; text-align: center; margin-bottom: 40px; font-weight: 900; font-family: "Microsoft JhengHei", sans-serif; }
+        h2 { font-size: 20pt; border-bottom: 3px double #000; padding-bottom: 10px; margin-top: 30px; font-family: "Microsoft JhengHei", sans-serif; }
+        /* 電務段改用深藍/科技藍色系 */
+        h3 { font-size: 16pt; margin-top: 25px; background-color: #f0f8ff; padding: 8px; border-left: 8px solid #00509e; font-family: "Microsoft JhengHei", sans-serif; }
+        h4 { font-size: 13pt; margin-top: 20px; font-weight: bold; text-decoration: underline; }
+        
+        p, li { font-size: 11pt; text-align: justify; margin-bottom: 8px; }
+        ul, ol { margin-left: 20px; padding-left: 0; }
+        li { margin-bottom: 5px; }
+
+        /* 表格 */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 10pt; page-break-inside: avoid; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #e8e8e8; text-align: center; font-weight: bold; }
+
+        /* 警告框與備註 */
+        .warning-box { border: 2px solid red; padding: 15px; margin: 15px 0; page-break-inside: avoid; }
+        .warning-title { color: red; font-weight: bold; font-size: 12pt; display: block; margin-bottom: 5px; }
+        
+        /* 藍色提示框 - 電務專用 */
+        .note-box { background-color: #e3f2fd; border-left: 4px solid #2196f3; padding: 10px; margin: 10px 0; font-style: italic; font-size: 10pt; }
+
+        /* 檢查表樣式 */
+        .checklist { border: 1px solid #000; padding: 5px; margin: 10px 0; font-family: "Consolas", monospace; }
+        .cl-row { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px dashed #ccc; }
+        .cl-row:last-child { border-bottom: none; }
+        .cl-item { font-weight: bold; }
+        .cl-check { font-weight: bold; }
+
+        /* 頁尾 */
+        .footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            right: 20mm;
+            text-align: center;
+            font-size: 9pt;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+        }
+        .page-num::after { content: counter(page); }
+    </style>
+</head>
+<body>
+
+<div class="page" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+    <div style="margin-top: 50px; font-size: 48pt; font-weight: 900; line-height: 1.2;">
+        號誌與電力系統<br>
+        電務段作業手冊
+    </div>
+    <div style="font-size: 24pt; margin-top: 20px; color: #555;">
+        SIGNAL & TELECOM / POWER MANUAL
+    </div>
+    
+    <div style="margin: 80px auto; width: 60%; border: 5px solid #00509e; padding: 40px;">
+        <p style="font-size: 16pt;"><strong>適用範圍：</strong> 號誌分隊 / 電力分隊 / 通訊分隊</p>
+        <p style="font-size: 16pt;"><strong>文件編號：</strong> ELE-SIG-2026-V2.0</p>
+        <p style="font-size: 16pt;"><strong>修訂日期：</strong> 2026/02/01</p>
+    </div>
+
+    <div style="margin-top: auto; margin-bottom: 50px;">
+        <p><strong>飛灣鐵路股份有限公司 電務處</strong></p>
+        <p>FEIWAN RAILWAY CO., ELECTRICAL DEPT.</p>
+    </div>
+</div>
+
+<div class="page">
+    <h1>文件控制與修訂記錄</h1>
+
+    <h3>版權聲明</h3>
+    <p>本手冊內容屬飛灣鐵路股份有限公司（Feiwan Railway Co.）電務處所有。本手冊詳述號誌聯鎖、軌道電路、平交道及電力設備之操作標準與維修規範，僅供內部合格電務人員使用，嚴禁外流。</p>
+
+    <h3>修訂記錄 (Revision History)</h3>
+    <table>
+        <tr>
+            <th width="15%">版本</th>
+            <th width="20%">日期</th>
+            <th width="20%">修訂者</th>
+            <th width="45%">說明</th>
+        </tr>
+        <tr>
+            <td>V 1.0</td>
+            <td>2024/01/10</td>
+            <td>電務處</td>
+            <td>初版發行</td>
+        </tr>
+        <tr>
+            <td>V 1.5</td>
+            <td>2025/06/20</td>
+            <td>技術科</td>
+            <td>更新電子聯鎖(CBI)維修規範，廢除機械號誌章節</td>
+        </tr>
+        <tr>
+            <td>V 2.0</td>
+            <td>2026/02/01</td>
+            <td>總工程師</td>
+            <td>整合電力變電系統與號誌系統手冊，新增計軸器SOP</td>
+        </tr>
+    </table>
+
+    <h3>人員資格要求</h3>
+    <ul>
+        <li><strong>基本資格：</strong> 具備電機、電子或相關科系背景，並通過公司內部電務基礎訓練。</li>
+        <li><strong>特定作業：</strong>
+            <ul>
+                <li>高壓電作業需持有「乙種電匠」或更高階證照。</li>
+                <li>軌道號誌維修需通過「號誌維修員」檢定。</li>
+                <li>高空作業需持有「高空作業車」操作證。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="footer">Page i</div>
+</div>
+
+<div class="page">
+    <h1>目 錄 (Table of Contents)</h1>
+    <ul style="list-style: none;">
+        <li><strong>第一章 總則與安全規範</strong> ................................................. 1</li>
+        <li>　1.1 電務核心任務與Fail-Safe原則 .................................... 1</li>
+        <li>　1.2 電氣安全與感電防護 ..................................................... 2</li>
+        <li><strong>第二章 號誌設備簡介 (Signaling)</strong> ..................................... 3</li>
+        <li>　2.1 聯鎖裝置 (Interlocking System) .................................... 3</li>
+        <li>　2.2 軌道電路 (Track Circuits) ............................................. 4</li>
+        <li>　2.3 電動轉轍器 (Point Machines) ....................................... 5</li>
+        <li>　2.4 號誌機與地上子 (Signals & Balises) ............................. 6</li>
+        <li>　2.5 平交道防護設備 ............................................................ 7</li>
+        <li>　2.6 計軸器 (Axle Counters) ................................................ 8</li>
+        <li><strong>第三章 電力設備簡介 (Power)</strong> .......................................... 9</li>
+        <li>　3.1 電車線系統 (OCS) ......................................................... 9</li>
+        <li>　3.2 變電站與電力調度 ........................................................ 10</li>
+        <li><strong>第四章 作業設備與工具</strong> ...................................................... 11</li>
+        <li>　4.1 標準電表與測量儀器 .................................................... 11</li>
+        <li>　4.2 專用檢測工具 (Shunts/Gauges) ................................... 12</li>
+        <li><strong>第五章 標準操作程序 (SOP)</strong> .............................................. 13</li>
+        <li>　5.1 轉轍器例行巡檢與注油 ................................................ 13</li>
+        <li>　5.2 軌道電路調校程序 ........................................................ 14</li>
+        <li>　5.3 號誌燈泡更換與對焦 .................................................... 15</li>
+        <li>　5.4 平交道機能測試 ............................................................ 16</li>
+        <li><strong>第六章 狀況排除與故障檢修</strong> .............................................. 17</li>
+        <li>　6.1 轉轍器無法定位 (定反位無表示) .................................. 17</li>
+        <li>　6.2 軌道電路紅光 (假佔用) 排除 ........................................ 18</li>
+        <li>　6.3 平交道遮斷桿故障排除 ................................................ 19</li>
+        <li><strong>第七章 附錄</strong> ......................................................................... 20</li>
+        <li>　7.1 維修紀錄表單 (範本) .................................................... 20</li>
+    </ul>
+    <div class="footer">Page ii</div>
+</div>
+
+<div class="page">
+    <h1>第一章 總則與安全規範</h1>
+
+    <h3>1.1 電務核心任務與 Fail-Safe 原則</h3>
+    <p>電務段負責鐵路之「神經系統」（號誌通訊）與「血液系統」（電力供應）。所有設計與維修必須嚴格遵守「失效安全 (Fail-Safe)」原則。</p>
+
+    <div class="note-box">
+        <strong>Fail-Safe 定義：</strong> 當設備發生故障、斷線、斷電或零件損壞時，系統必須自動導向「最安全」的狀態（通常為顯示紅燈、停止列車、阻止路徑建立），絕不可顯示允許通行之錯誤訊號。
+    </div>
+
+    <h4>主要職責：</h4>
+    <ol>
+        <li><strong>行車安全確保：</strong> 維持號誌邏輯正確，防止列車衝突、追撞、脫軌。</li>
+        <li><strong>供電穩定：</strong> 確保電車線 25kV 及各車站設備供電不中斷。</li>
+        <li><strong>通訊暢通：</strong> 維持調度無線電、光纖傳輸系統之可靠度。</li>
+    </ol>
+
+    <div class="footer">Page 1</div>
+</div>
+
+<div class="page">
+    <h3>1.2 電氣安全與感電防護</h3>
+    <p>鐵路環境充斥高壓電與移動車輛，作業風險極高。</p>
+
+    <h4>A. 電壓等級區分</h4>
+    <table>
+        <tr><th>系統</th><th>電壓</th><th>備註</th></tr>
+        <tr><td>電車線 (OCS)</td><td>AC 25,000V</td><td>絕對致死電壓，安全距離 1.5m 以上。</td></tr>
+        <tr><td>轉轍器動力</td><td>DC 110V / AC 220V</td><td>具備高電流，嚴禁短路。</td></tr>
+        <tr><td>軌道電路</td><td>AC/DC 2V ~ 12V</td><td>雖為低壓，但短路會造成號誌變紅燈。</td></tr>
+        <tr><td>設備控制電</td><td>DC 24V</td><td>繼電器邏輯電路主電源。</td></tr>
+    </table>
+
+    <div class="warning-box">
+        <span class="warning-title">感電預防規則 (Life Saving Rules)</span>
+        1. <strong>斷電鎖定 (LOTO)：</strong> 維修前必須切斷電源，並掛上「維修中禁止送電」牌示。<br>
+        2. <strong>驗電：</strong> 接觸任何導體前，一律視為有電，必須使用檢電筆確認。<br>
+        3. <strong>接地：</strong> 高壓設備停電後，必須掛設臨時接地線方可作業。
+    </div>
+
+    <div class="footer">Page 2</div>
+</div>
+
+<div class="page">
+    <h1>第二章 號誌設備簡介</h1>
+
+    <h3>2.1 聯鎖裝置 (Interlocking System)</h3>
+    <p>聯鎖是鐵路號誌的核心，負責邏輯運算。目前本公司主要使用繼電聯鎖與電子聯鎖。</p>
+    
+    <h4>A. 繼電聯鎖 (Relay Interlocking)</h4>
+    <p>利用重力落下式繼電器 (Gravity Type Relay) 組成邏輯電路。
+    <ul>
+        <li><strong>優點：</strong> 抗突波能力強，故障查修直觀。</li>
+        <li><strong>缺點：</strong> 體積大，修改邏輯需更改配線。</li>
+    </ul>
+    </p>
+
+    <h4>B. 電子聯鎖 (Computer Based Interlocking, CBI)</h4>
+    <p>利用雙套或三套電腦運算邏輯，具備熱備援 (Hot Standby) 功能。</p>
+    <ul>
+        <li><strong>輸入/輸出 (I/O)：</strong> 透過光纖與現場設備溝通。</li>
+        <li><strong>維護終端機：</strong> 可即時顯示系統狀態與紀錄故障代碼 (Log)。</li>
+    </ul>
+
+    <div class="footer">Page 3</div>
+</div>
+
+<div class="page">
+    <h3>2.2 軌道電路 (Track Circuits)</h3>
+    <p>利用兩條鋼軌作為導體，偵測列車位置及鋼軌完整性。</p>
+
+    
+    <h4>運作原理：</h4>
+    <ol>
+        <li><strong>送電端 (Tx)：</strong> 輸送低電壓電流至鋼軌。</li>
+        <li><strong>受電端 (Rx)：</strong> 繼電器激磁吸起 (Pick Up)，表示軌道「空閒 (Clear)」。</li>
+        <li><strong>列車佔用：</strong> 當列車輪對 (Wheelset) 壓過，車軸將左右鋼軌短路，電流不流經繼電器，繼電器落下 (Drop Away)，顯示「佔用 (Occupied)」。</li>
+    </ol>
+
+    <h4>常見類型：</h4>
+    <table>
+        <tr><th>類型</th><th>特性</th><th>適用區域</th></tr>
+        <tr><td><strong>DC 軌道電路</strong></td><td>結構簡單，易受雜散電流干擾。</td><td>非電氣化區間/側線</td></tr>
+        <tr><td><strong>音頻軌道電路 (AF)</strong></td><td>利用不同頻率區隔區間，無需絕緣接頭。</td><td>正線/長區間</td></tr>
+        <tr><td><strong>高壓脈衝式</strong></td><td>破除軌面鏽蝕能力強。</td><td>少用側線/生鏽軌道</td></tr>
+    </table>
+
+    <div class="footer">Page 4</div>
+</div>
+
+<div class="page">
+    <h3>2.3 電動轉轍器 (Point Machines)</h3>
+    <p>用於轉換軌道方向的執行機構。本路段主要使用 NS型 及 M3型 電動轉轍器。</p>
+
+    
+    <h4>主要構造：</h4>
+    <ul>
+        <li><strong>電動機 (Motor)：</strong> 提供動力，通常為 DC 系列馬達。</li>
+        <li><strong>減速齒輪與離合器：</strong> 放大扭力並保護馬達（遇障礙物時打滑）。</li>
+        <li><strong>轉換桿 (Throw Bar)：</strong> 連接尖軌，推動軌道移動。</li>
+        <li><strong>鎖定桿 (Lock Bar)：</strong> 確保尖軌密貼後機械鎖定，防止列車通過時跳動。</li>
+        <li><strong>表示接點 (Detector Contacts)：</strong> 偵測尖軌是否確實密貼，並回傳訊號給聯鎖裝置。</li>
+    </ul>
+
+    <div class="note-box">
+        <strong>定位 (Normal) 與 反位 (Reverse)：</strong> 通常定位指直行方向，反位指分歧方向。
+    </div>
+
+    <div class="footer">Page 5</div>
+</div>
+
+<div class="page">
+    <h3>2.4 號誌機與地上子 (Signals & Balises)</h3>
+
+    <h4>A. 號誌機 (Color Light Signals)</h4>
+    <p>現已全面LED化，具備長壽命與高視認性。</p>
+    <ul>
+        <li><strong>綠燈 (G)：</strong> 平安，依規定最高速度行駛。</li>
+        <li><strong>黃燈 (Y)：</strong> 注意，下一號誌為險阻，準備減速。</li>
+        <li><strong>紅燈 (R)：</strong> 險阻，絕對停止。</li>
+        <li><strong>雙黃 (YY)：</strong> 減速，限速 60km/h 通過。</li>
+    </ul>
+
+    <h4>B. 自動列車防護 (ATP) 地上子</h4>
+    <p>安裝於兩軌中間黃色或橘色之裝置。</p>
+    <ul>
+        <li><strong>功能：</strong> 將號誌狀態、速限資訊透過電磁感應傳送給列車電腦。</li>
+        <li><strong>固定地上子：</strong> 傳送固定速限（如彎道、坡度）。</li>
+        <li><strong>可變地上子：</strong> 連接號誌機，依燈號傳送不同速限資訊。</li>
+    </ul>
+    
+    <div class="warning-box">
+        地上子嚴禁踩踏或金屬撞擊，安裝高度需精準控制在軌面下 X mm 範圍內。
+    </div>
+
+    <div class="footer">Page 6</div>
+</div>
+
+<div class="page">
+    <h3>2.5 平交道防護設備</h3>
+    <p>平交道為鐵公路交會點，屬高風險區域。</p>
+
+    <h4>系統組成：</h4>
+    <ol>
+        <li><strong>警報點 (Trigger Point)：</strong> 列車到達前 40~60 秒觸發。</li>
+        <li><strong>警報機：</strong> 閃光燈與警鐘，警告公路用路人。</li>
+        <li><strong>遮斷機 (Barrier)：</strong> 欄杆降下阻擋車輛。</li>
+        <li><strong>障礙物偵測 (Obstacle Detection)：</strong> 
+            <ul>
+                <li>雷達式或紅外線式。</li>
+                <li>偵測平交道淨空內是否有滯留車輛。若有，連動週邊號誌顯示紅燈，保護列車。</li>
+            </ul>
+        </li>
+    </ol>
+    
+    
+    <div class="footer">Page 7</div>
+</div>
+
+<div class="page">
+    <h3>2.6 計軸器 (Axle Counters)</h3>
+    <p>在長隧道、長橋樑或潮濕區間，替代軌道電路使用。</p>
+
+    <h4>工作原理：</h4>
+    <p>在區間入口與出口各設置一組感應頭 (Wheel Sensor)。</p>
+    <ul>
+        <li><strong>計數進入：</strong> 列車進入時，計算輪軸數量 (Count In)。</li>
+        <li><strong>計數離開：</strong> 列車離開時，計算輪軸數量 (Count Out)。</li>
+        <li><strong>比對：</strong> 若 In = Out，代表區間淨空；若不相等，則視為佔用 (Reset required)。</li>
+    </ul>
+
+    <div class="note-box">
+        <strong>維護重點：</strong> 感應頭對金屬極為敏感，作業時工具不可放置於感應頭上方或周圍 30cm 內。
+    </div>
+
+    <div class="footer">Page 8</div>
+</div>
+
+<div class="page">
+    <h1>第三章 電力設備簡介 (Power)</h1>
+
+    <h3>3.1 電車線系統 (Overhead Catenary System, OCS)</h3>
+    <p>負責傳輸電力給列車集電弓。</p>
+
+    
+    <h4>主要組件：</h4>
+    <ul>
+        <li><strong>主吊線 (Messenger Wire)：</strong> 上方承重之鋼絞線。</li>
+        <li><strong>接觸線 (Contact Wire)：</strong> 下方與集電弓直接摩擦之銅線，需保持水平與適當張力。</li>
+        <li><strong>吊掛線 (Dropper)：</strong> 連接主吊線與接觸線。</li>
+        <li><strong>自動張力平衡裝置 (Tension Balancer)：</strong> 利用重錘或彈簧，吸收熱脹冷縮，維持線路張力恆定 (通常為 1000kgf)。</li>
+    </ul>
+
+    <div class="warning-box">
+        <strong>偏位 (Stagger)：</strong> 接觸線並非直線，而是呈「之」字形排列，使集電弓碳刷均勻磨耗，維修時需校正偏位值。
+    </div>
+
+    <div class="footer">Page 9</div>
+</div>
+
+<div class="page">
+    <h3>3.2 變電站與電力調度</h3>
+    
+    <h4>A. 變電站功能</h4>
+    <p>將台電供應之 69kV 或 161kV 特高壓，降壓並轉換為適合鐵路使用之電壓 (25kV AC)。</p>
+    <ul>
+        <li><strong>史考特變壓器 (Scott Transformer)：</strong> 將三相電轉換為兩組單相電 (M座/T座)，以平衡三相負載。</li>
+        <li><strong>中性區間 (Neutral Section)：</strong> 設於變電站出口，隔離不同相位的電力，列車通過時需切斷動力滑行。</li>
+    </ul>
+
+    <h4>B. SCADA 電力遙控系統</h4>
+    <p>位於行控中心，可遠端監視全線電力狀態。</p>
+    <ul>
+        <li>即時監控電壓、電流、功率因數。</li>
+        <li>故障跳脫時，可執行遠端復歸或切換供電分區。</li>
+    </ul>
+
+    <div class="footer">Page 10</div>
+</div>
+
+<div class="page">
+    <h1>第四章 作業設備與工具</h1>
+
+    <h3>4.1 標準電表與測量儀器</h3>
+
+    <h4>A. 數位三用電表 (True RMS Multimeter)</h4>
+    <p>電務人員隨身必備工具。需具備 True RMS 功能以準確測量非正弦波訊號。</p>
+    <ul>
+        <li><strong>DC 電壓：</strong> 測量繼電器供電、電池電壓。</li>
+        <li><strong>AC 電壓：</strong> 測量軌道電路訊號、市電。</li>
+        <li><strong>電阻 (Ω)：</strong> 測量線圈阻抗、線路通斷。</li>
+    </ul>
+    
+    
+    <h4>B. 絕緣電阻計 (Megger)</h4>
+    <p>用於測量電纜絕緣好壞，預防接地故障。</p>
+    <ul>
+        <li><strong>500V 檔位：</strong> 用於一般號誌電纜。</li>
+        <li><strong>1000V/5000V 檔位：</strong> 用於高壓電力電纜。</li>
+        <li><strong>標準：</strong> 新設電纜 > 10MΩ，既設電纜 > 1MΩ (依規範為準)。</li>
+    </ul>
+
+    <h4>C. 勾式電流表 (Clamp Meter)</h4>
+    <p>測量轉轍器馬達運轉電流或軌道電路電流，無須斷線。</p>
+
+    <div class="footer">Page 11</div>
+</div>
+
+<div class="page">
+    <h3>4.2 專用檢測工具</h3>
+
+    <h4>A. 軌道電路短路導線 (Shunt Wire)</h4>
+    <p>一條標準阻值 (0.06Ω) 的導線。</p>
+    <ul>
+        <li><strong>用途：</strong> 模擬列車車輪短路軌道。</li>
+        <li><strong>測試方法：</strong> 將導線夾在兩條鋼軌上，觀察軌道繼電器是否確實落下 (Drop)。若未落下，代表靈敏度不足，極度危險。</li>
+    </ul>
+
+    <h4>B. 轉轍器手搖把與各類鑰匙</h4>
+    <ul>
+        <li><strong>手搖把 (Crank Handle)：</strong> 故障或停電時，人工操作轉轍器用。具備安全斷電接點。</li>
+        <li><strong>各類鑰匙：</strong> 號誌箱鑰匙、連鎖解鎖鑰匙、平交道手動開關鑰匙。</li>
+    </ul>
+
+    <h4>C. 轉轍器密貼規 (Test Gauge)</h4>
+    <ul>
+        <li><strong>2mm 規：</strong> 插入尖軌與基本軌間，轉轍器應能鎖閉 (Lock)。</li>
+        <li><strong>4mm 規 (或5mm)：</strong> 插入尖軌與基本軌間，轉轍器**不可**鎖閉，且號誌不得顯示進行。</li>
+    </ul>
+
+    <div class="footer">Page 12</div>
+</div>
+
+<div class="page">
+    <h1>第五章 標準操作程序 (SOP)</h1>
+
+    <h3>5.1 轉轍器例行巡檢與注油</h3>
+    <p><strong>週期：</strong> 雙週檢 / 月檢</p>
+
+    <h4>A. 外部檢查</h4>
+    <ol>
+        <li>檢查箱體周圍排水是否良好，無雜草掩蓋。</li>
+        <li>檢查連接桿件 (Rod) 之插銷、開口銷 (Split Pin) 是否完整。</li>
+        <li>檢查枕木螺栓是否鎖緊。</li>
+    </ol>
+
+    <h4>B. 內部保養</h4>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 清潔</span><span class="cl-check">使用棉布清除舊油污與碳粉</span></div>
+        <div class="cl-row"><span class="cl-item">2. 接點檢查</span><span class="cl-check">接點壓力適當，接觸面光亮無燒損</span></div>
+        <div class="cl-row"><span class="cl-item">3. 注油</span><span class="cl-check">滑動面塗抹專用黃油 (Grease)</span></div>
+        <div class="cl-row"><span class="cl-item">4. 減速機</span><span class="cl-check">檢查齒輪箱油位</span></div>
+        <div class="cl-row"><span class="cl-item">5. 動作測試</span><span class="cl-check">配合車站操作，聽聲音是否順暢</span></div>
+    </div>
+
+    <div class="warning-box">
+        <strong>注意：</strong> 轉轍器動作時力量極大，手腳嚴禁伸入可動範圍內。檢修內部時務必斷開安全接點 (Safety Contact)。
+    </div>
+
+    <div class="footer">Page 13</div>
+</div>
+
+<div class="page">
+    <h3>5.2 軌道電路調校程序</h3>
+    <p>當道碴電阻變化（如下雨、換碴）導致電壓異常時需進行調校。</p>
+
+    <h4>A. 測量前準備</h4>
+    <ul>
+        <li>確認該區間無列車。</li>
+        <li>攜帶三用電表與可調電阻工具。</li>
+    </ul>
+
+    <h4>B. 調整步驟 (以音頻軌道電路為例)</h4>
+    <ol>
+        <li><strong>測量接收電壓 (Rx Level)：</strong> 在接收箱端子測量電壓。
+            <ul>
+                <li>標準值：依原廠規範 (例如 200mV ~ 400mV)。</li>
+            </ul>
+        </li>
+        <li><strong>調整發送電平 (Tx Level)：</strong> 若電壓過低（易紅燈），調高 Tx 輸出；若電壓過高（靈敏度差），調低 Tx 輸出。</li>
+        <li><strong>相位角檢查 (Phase)：</strong> 雙軌條電流相位需符合規範，否則繼電器力矩不足。</li>
+    </ol>
+
+    <h4>C. 分流測試 (Shunt Test)</h4>
+    <p>調整完畢後，必須執行分流測試。</p>
+    <ul>
+        <li>使用 0.06Ω 標準短路導線。</li>
+        <li>在軌道區間之 起點、中間、終點 三處分別短路。</li>
+        <li>確認控制台顯示紅光 (Occupied)。</li>
+    </ul>
+
+    <div class="footer">Page 14</div>
+</div>
+
+<div class="page">
+    <h3>5.3 號誌燈泡更換與對焦</h3>
+    <p>雖然多已改為 LED，但仍有部分備援或傳統燈泡。</p>
+
+    <h4>A. 燈泡更換程序</h4>
+    <ol>
+        <li>開啟燈箱，檢查電壓是否切斷（或穿戴絕緣手套）。</li>
+        <li>取下燒毀燈泡，檢查燈座是否有鏽蝕。</li>
+        <li>換上同規格新燈泡（注意瓦數與電壓，如 12V 24W）。</li>
+        <li>確認燈絲方向正確（通常有定位點）。</li>
+    </ol>
+
+    <h4>B. 對焦 (Focusing)</h4>
+    <p>號誌機皆有透鏡聚光，燈泡位置必須在焦點上。</p>
+    <ul>
+        <li><strong>方法：</strong> 一人於燈箱調整，一人於 200m 外（或使用望遠鏡）確認亮度最亮點。</li>
+        <li><strong>門扉鎖閉：</strong> 確認防護橡皮圈良好，鎖緊門扣，防止漏水。</li>
+    </ul>
+
+    <div class="footer">Page 15</div>
+</div>
+
+<div class="page">
+    <h3>5.4 平交道機能測試</h3>
+
+    <h4>A. 模擬測試</h4>
+    <p>在不影響列車情況下，手動啟動平交道序列。</p>
+    <ol>
+        <li><strong>警報啟動：</strong> 警鐘響，閃光燈交互閃爍。確認聲音響亮、燈光無死燈。</li>
+        <li><strong>遮斷下降：</strong> 警報後約 6-8 秒，遮斷桿開始下降。
+            <ul>
+                <li>下降時間：標準 4~6 秒。</li>
+                <li>水平確認：桿尾距地高約 80~90cm。</li>
+            </ul>
+        </li>
+        <li><strong>障礙物偵測測試：</strong> 遮斷桿降下後，放置測試物於偵測區。
+            <ul>
+                <li>系統應發出特殊警報，並連動特殊號誌機顯示停止。</li>
+            </ul>
+        </li>
+        <li><strong>復歸：</strong> 解除啟動，確認遮斷桿垂直升起（85度以上）。</li>
+    </ol>
+
+    <div class="footer">Page 16</div>
+</div>
+
+<div class="page">
+    <h1>第六章 狀況排除與故障檢修</h1>
+
+    <h3>6.1 轉轍器無法定位 (定反位無表示)</h3>
+    <p>最常見且影響最大的故障。</p>
+
+    <h4>故障現象：</h4>
+    <p>控制台操作後，位置燈號持續閃爍，電流表顯示電流持續或瞬間過大。</p>
+
+    <h4>排除流程圖 (Flowchart)：</h4>
+    <div style="border-left: 4px solid #d32f2f; padding-left: 15px;">
+        <p><strong>Step 1: 現場目視</strong><br>
+        檢查尖軌縫隙是否有異物（石頭、飲料罐）。<br>
+        &rarr; <strong>有：</strong> 清除異物，測試動作。<br>
+        &rarr; <strong>無：</strong> 進入 Step 2。</p>
+
+        <p><strong>Step 2: 手搖測試</strong><br>
+        斷開電源，插入手搖把操作。<br>
+        &rarr; <strong>很重/卡死：</strong> 機械卡阻、滑板缺油或變形。<br>
+        &rarr; <strong>輕快正常：</strong> 鎖上班位，進入 Step 3。</p>
+
+        <p><strong>Step 3: 電氣量測</strong><br>
+        &rarr; <strong>馬達不轉：</strong> 查保險絲、繼電器輸出、碳刷磨耗。<br>
+        &rarr; <strong>馬達空轉：</strong> 摩擦離合器太鬆，需調整彈簧壓力。<br>
+        &rarr; <strong>已到位但無表示：</strong> 表示接點髒污或調整不良（缺口跑掉）。</p>
+    </div>
+
+    <div class="footer">Page 17</div>
+</div>
+
+<div class="page">
+    <h3>6.2 軌道電路紅光 (假佔用) 排除</h3>
+    <p>無列車但顯示紅光，導致號誌無法開通。</p>
+
+    <h4>可能原因與處置：</h4>
+    <table>
+        <tr><th>原因</th><th>特徵</th><th>處置方法</th></tr>
+        <tr><td><strong>絕緣接頭失效</strong></td><td>相鄰區間訊號竄入。</td><td>目視檢查絕緣片是否破損、有鐵削跨接。更換絕緣片。</td></tr>
+        <tr><td><strong>跳線 (Bonding) 斷裂</strong></td><td>鋼軌連接線斷裂，迴路中斷。</td><td>檢查魚尾鈑連接線，重新焊接或鎖緊。</td></tr>
+        <tr><td><strong>道碴不良</strong></td><td>下雨天發生，電壓大幅下降。</td><td>道碴髒污導致漏電。需請工務段清篩道碴，暫時調高發送電壓應急。</td></tr>
+        <tr><td><strong>設備故障</strong></td><td>接收端無電壓輸出。</td><td>更換接收器 (Rx) 或發送器 (Tx) 模組。</td></tr>
+    </table>
+
+    <div class="footer">Page 18</div>
+</div>
+
+<div class="page">
+    <h3>6.3 平交道遮斷桿故障排除</h3>
+
+    <h4>A. 遮斷桿無法升起</h4>
+    <ul>
+        <li><strong>原因：</strong> 控制電路當機、馬達故障、平衡配重跑掉。</li>
+        <li><strong>緊急處置：</strong>
+            <ol>
+                <li>按下「手動開關」強制升起。</li>
+                <li>若無效，使用手搖把將桿子搖起，並用繩索固定（需派員看守）。</li>
+                <li>檢修馬達碳刷或更換機板。</li>
+            </ol>
+        </li>
+    </ul>
+
+    <h4>B. 遮斷桿被打斷</h4>
+    <p>常見於車輛闖越平交道。</p>
+    <ol>
+        <li>立即按壓「緊急按鈕」防護列車。</li>
+        <li>移除斷桿，避免侵入限界。</li>
+        <li>安裝備用桿（通常存放於路旁機櫃後方）。</li>
+        <li>測試平衡配重，確認升降速度正常。</li>
+    </ol>
+
+    <div class="footer">Page 19</div>
+</div>
+
+<div class="page">
+    <h1>第七章 附錄</h1>
+
+    <h3>7.1 維修紀錄表單 (範本)</h3>
+
+    <div class="checklist" style="height: 600px; position: relative;">
+        <div style="text-align: center; font-weight: bold; border-bottom: 2px solid #000; padding: 10px;">
+            飛灣鐵路 號誌設備定期檢查表 (Form-SIG-01)
+        </div>
+        <div style="padding: 10px; display: flex; justify-content: space-between;">
+            <span>站場：__________</span>
+            <span>日期：20__/__/__</span>
+            <span>天氣：_______</span>
+        </div>
+        
+        <table style="width: 98%; margin: 10px auto;">
+            <tr>
+                <th width="15%">設備編號</th>
+                <th width="25%">檢查項目</th>
+                <th width="20%">標準值</th>
+                <th width="20%">測量值</th>
+                <th width="20%">判定</th>
+            </tr>
+            <tr>
+                <td rowspan="3">21A 轉轍器</td>
+                <td>馬達電壓</td>
+                <td>DC 110V ±10%</td>
+                <td>______ V</td>
+                <td>[ ] OK</td>
+            </tr>
+            <tr>
+                <td>轉換電流</td>
+                <td>< 8 A</td>
+                <td>______ A</td>
+                <td>[ ] OK</td>
+            </tr>
+            <tr>
+                <td>密貼測試 (4mm)</td>
+                <td>不可鎖閉</td>
+                <td>Pass / Fail</td>
+                <td>[ ] OK</td>
+            </tr>
+            <tr>
+                <td rowspan="2">102 軌道電路</td>
+                <td>送電端電壓</td>
+                <td>___ V (Ref)</td>
+                <td>______ V</td>
+                <td>[ ] OK</td>
+            </tr>
+            <tr>
+                <td>受電端電壓</td>
+                <td>> 0.5 V</td>
+                <td>______ V</td>
+                <td>[ ] OK</td>
+            </tr>
+        </table>
+        
+        <div style="margin: 20px 10px; border: 1px solid #999; height: 150px; padding: 10px;">
+            <strong>異常狀況與處置紀錄：</strong><br>
+            <br>
+            <br>
+        </div>
+        
+        <div style="text-align: right; padding: 20px;">
+            檢修人員：____________ 領班覆核：____________
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center; color: #666; font-size: 10pt;">
+        <p>飛灣鐵路股份有限公司 電務處 印製</p>
+        <p>Feiwan Railway Co. Electrical Dept.</p>
+        <p>24H 通報中心：0800-886-000</p>
+    </div>
+
+    <div class="footer">Page 20 (End)</div>
+</div>
+
+</body>
+</html>

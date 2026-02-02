@@ -30,52 +30,51 @@
     <h1>公告及資訊</h1>
     <p class="lead">
       本頁彙整飛灣鐵路公司的營運公告、工程資訊與活動消息。<br>
-      部分內容僅適用於特定時段或世界線，敬請留意公告日期。
+      部分內容由系統自動更新，以提供最新的活動情報。
     </p>
   </section>
 
   <section>
     <h2>營運公告</h2>
-    <article class="card">
-      <small class="meta">2025-03-01</small>
-      <h3>飛龍宮站更名為「飛龍宗教中心站」</h3>
-      <p>
-        自 2025 年 3 月 1 日起，原「飛龍宮站」正式更名為「飛龍宗教中心站」。
-        車站位置與出入口不變，僅站名與相關標示更新。
-        列車廣播、路線圖與票券資訊將陸續更改為新站名，請旅客提早調整行程規劃。
-      </p>
-    </article>
-
-    <article class="card">
-      <small class="meta">世界線未定</small>
-      <h3>飛灣通勤鐵路系統工程進度說明</h3>
-      <p>
-        飛灣地區通勤鐵路系統目前仍在興建中，實際完工日期受各種世界線因素影響，
-        暫時無法提供明確通車時間表。待工程與預算在本世界線穩定後，本公司將另行公布詳情。
-      </p>
-    </article>
+    <div class="grid grid-2">
+      <article class="card">
+        <small class="meta">2026-01-23</small>
+        <h3>政府政策｜海岸線解放法案</h3>
+        <p>
+          【2025 「海岸線解放」法案】中央政府頒布《海岸景觀復育法》，除飛灣核心特區外，優先拆除沿海城市濱海鐵路設施，改建為濱海公園與生態溼地。
+        </p>
+      </article>
+      <article class="card">
+        <small class="meta">2026-01-23</small>
+        <h3>政府政策｜綠色縫合計畫</h3>
+        <p>
+          【2025 全京綠色縫合計畫】配合全京市與綾路市轉型為「低噪音寧靜特區」，本公司將執行「路廊升級手術」，以更環保的運具取代傳統重軌。
+        </p>
+      </article>
+    </div>
   </section>
 
   <section>
     <h2>工程與建設</h2>
     <article class="card">
       <small class="meta">施工資訊</small>
-      <h3>飛灣南北線與地鐵舞田線規劃中</h3>
+      <h3>年度例行性軌道養護</h3>
       <p>
-        為提升飛灣地區南北向交通運能，飛灣南北線與地鐵舞田線已進入規劃及初步設計階段。
-        未來將提供更多轉乘節點，並與既有飛灣線、飛灣環狀線形成更綿密的路網。
-      </p>
-      <p class="meta">
-        詳細路線圖與車站配置將於世界線敲定後公布。
+        本月份將進行全線夜間巡軌作業，不影響日間營運。
       </p>
     </article>
   </section>
 
   <section>
-    <h2>活動資訊</h2>
-    <p class="lead">
-      節慶加班車、觀光列車與期間限定票券等資訊，將於規畫完成後公布於本區。
-    </p>
+    <h2>活動資訊 Activity Highlights</h2>
+    <p class="meta">以下資訊每 5 天自動更新一次</p>
+    
+    <div class="grid grid-2" id="activity-news-container">
+      <article class="card">
+        <small class="meta">載入中...</small>
+        <h3>資料讀取中</h3>
+      </article>
+    </div>
   </section>
 </main>
 
@@ -84,5 +83,98 @@
     <p>本網站所有公告內容皆屬虛構，僅供娛樂與創作參考。</p>
   </div>
 </footer>
+
+<script>
+(function() {
+  // === 設定區 ===
+  const UPDATE_INTERVAL_DAYS = 5; // 每5天更新
+  const NEWS_COUNT = 4; // News 頁面顯示 4 則 (比首頁多)
+
+  // === 資料庫 (與 Index 保持一致) ===
+  const DB = {
+    stations: ['飛灣公園', '飛灣郵輪港', '市民廣場', '海莊遊樂園', '科創園', '飛灣新站', '碼頭', '文化中心'],
+    activities: ['市集', '音樂節', '路跑', '展覽', '煙火', '美食展', '打卡活動', '野餐日', '藝術季', '快閃店', '親子日'],
+    templates: {
+      titles: [
+        "週末去哪玩？{S} {T} 成為話題焦點",
+        "熱情登場：{S} {T} 邀請您共襄盛舉",
+        "打卡熱點！{S} {T} 讓網友瘋傳",
+        "探索飛灣：{S} 舉辦年度 {T}",
+        "最新情報：{S} {T} 本週開跑"
+      ],
+      bodies: [
+        "最近在社群媒體上爆紅的，竟然是 **{S}**！原來是這裡的「{T}」吸引了大批民眾朝聖。放假不知道去哪裡？飛灣鐵路推薦您前往體驗。",
+        "這週末 **{S}** 將舉辦盛大的「{T}」，現場預計會有豐富的攤位與表演。搭乘飛灣快線前往，既環保又方便，千萬別錯過。",
+        "為了活化在地觀光，**{S}** 特別推出了「{T}」活動。實際走訪現場，氣氛非常熱鬧，非常適合闔家光臨或情侶約會。",
+        "網友熱議的「{T}」就在 **{S}**！飛灣鐵路提醒您，活動期間人潮眾多，請多利用大眾運輸工具前往，享受輕鬆的假期。"
+      ]
+    }
+  };
+
+  // === 偽隨機數產生器 (Seeded Random) ===
+  class SeededRNG {
+    constructor(seed) { this.seed = seed; }
+    next() {
+      this.seed = (this.seed * 9301 + 49297) % 233280;
+      return this.seed / 233280;
+    }
+    pick(arr) {
+      return arr[Math.floor(this.next() * arr.length)];
+    }
+  }
+
+  // === 生成邏輯 ===
+  function generateNews(offsetDays = 0) {
+    const now = new Date();
+    const timestamp = now.getTime();
+    const dayMs = 86400000;
+    
+    // 計算區塊ID
+    const blockId = Math.floor((timestamp - (offsetDays * dayMs)) / (UPDATE_INTERVAL_DAYS * dayMs));
+    
+    // 初始化種子
+    const rng = new SeededRNG(blockId);
+
+    const station = rng.pick(DB.stations);
+    const activity = rng.pick(DB.activities);
+    const rawTitle = rng.pick(DB.templates.titles);
+    const rawBody = rng.pick(DB.templates.bodies);
+    
+    // 日期計算
+    const dateObj = new Date(blockId * UPDATE_INTERVAL_DAYS * dayMs);
+    const dateStr = `${dateObj.getFullYear()}-${String(dateObj.getMonth()+1).padStart(2,'0')}-${String(dateObj.getDate()).padStart(2,'0')}`;
+
+    return {
+      date: dateStr,
+      category: '活動快訊',
+      title: rawTitle.replace(/{S}/g, station).replace(/{T}/g, activity),
+      body: rawBody.replace(/{S}/g, station).replace(/{T}/g, activity),
+    };
+  }
+
+  // === 渲染到頁面 ===
+  function render() {
+    const container = document.getElementById('activity-news-container');
+    if (!container) return;
+
+    let html = '';
+    // 生成歷史新聞列表
+    for (let i = 0; i < NEWS_COUNT; i++) {
+      const news = generateNews(i * UPDATE_INTERVAL_DAYS);
+      
+      html += `
+        <article class="card">
+          <small class="meta" style="color:#16a085;">${news.category}｜${news.date}</small>
+          <h3>${news.title}</h3>
+          <p>${news.body}</p>
+        </article>
+      `;
+    }
+    container.innerHTML = html;
+  }
+
+  window.addEventListener('load', render);
+})();
+</script>
 </body>
 </html>

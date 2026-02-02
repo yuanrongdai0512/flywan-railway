@@ -4,6 +4,112 @@
   <meta charset="UTF-8">
   <title>車站與路線資訊｜飛灣鐵路公司</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* 僅針對「車站資訊查詢區域」進行樣式設定，不影響頁面其他部分 */
+    .fr-station-query {
+      margin-top: 40px;
+      border: 3px solid #00bcd4; /* 全天空藍線條 */
+      border-radius: 8px;
+      background-color: #ffffff;
+      font-family: "Microsoft JhengHei", sans-serif;
+      overflow: hidden;
+    }
+
+    /* 查詢區域頂部 */
+    .query-top-bar {
+      background-color: #00bcd4; /* 天空藍 */
+      padding: 20px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .query-top-bar label { font-weight: bold; }
+    .station-dropdown {
+      padding: 8px 12px;
+      border-radius: 4px;
+      border: 2px solid #ffffff;
+      font-size: 1rem;
+      width: 300px;
+      color: #333;
+    }
+
+    .station-panel-body { padding: 30px; }
+
+    /* 車站標題 */
+    .st-main-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 15px;
+    }
+    .st-code-box {
+      background-color: #00bcd4;
+      color: #ffffff;
+      padding: 5px 15px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+    .st-name-display { font-size: 2.5rem; font-weight: bold; color: #333; margin: 0; }
+
+    /* 其他服務：行李托運 */
+    .airport-checkin-info {
+      background-color: #fff9db;
+      border: 1px solid #00bcd4;
+      padding: 15px;
+      margin-bottom: 25px;
+      border-radius: 4px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    /* 標準化表格標題 */
+    .table-category-title {
+      background-color: #e0e0e0; /* 銀灰色 */
+      color: #333;
+      padding: 10px 15px;
+      font-weight: bold;
+      margin: 30px 0 10px 0;
+      border-left: 5px solid #00bcd4;
+    }
+
+    /* 標準化表格 */
+    .fr-standard-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+    .fr-standard-table th {
+      background-color: #f7f7f7;
+      text-align: left;
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      width: 250px;
+      color: #00bcd4; /* 天空藍文字 */
+    }
+    .fr-standard-table td {
+      padding: 12px;
+      border: 1px solid #e0e0e0;
+      color: #444;
+    }
+
+    .exit-badge {
+      background-color: #00bcd4;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .station-dropdown { width: 100%; }
+      .fr-standard-table th, .fr-standard-table td { display: block; width: 100%; }
+    }
+  </style>
 </head>
 <body>
 <header class="site-header">
@@ -30,7 +136,7 @@
     <h1>車站與路線資訊</h1>
     <p class="lead">
       飛灣鐵路目前營運與規劃中路線包含：飛灣線、飛灣環狀線與紅楓線。<br>
-      本頁提供各路線概要與主要車站一覽，詳細時刻請參考「時刻表」頁面。
+      本頁提供各路線概要與標準化車站詳細服務查詢。
     </p>
   </section>
 
@@ -38,112 +144,138 @@
     <h2>路線概要</h2>
     <div class="grid grid-3">
       <article class="card">
-        <span class="badge">FW Line</span>
-        <h3>飛灣線</h3>
-        <p>
-          連結飛灣市中心、飛灣機場、海莊渡假區與夏城等地的主幹路線。
-          負責多數通勤與觀光運輸需求。
-        </p>
+        <span class="badge">FR Line</span>
+        <h3>FR-飛灣線</h3>
+        <p>連結飛灣港、飛灣市中心、飛灣機場、綾路北站等地的主幹路線。</p>
       </article>
       <article class="card">
-        <span class="badge">Ring Line</span>
-        <h3>飛灣環狀線</h3>
-        <p>
-          以環狀路線串聯住宅區、校園與商圈，提供市民在不同生活圈之間快速移動與轉乘。
-        </p>
+        <span class="badge">ART Line 1</span>
+        <h3>ART-綾京線</h3>
+        <p>以電動無軌快捷公車，串聯綾路北站、全京大道、全京市區、全京碼頭。</p>
       </article>
       <article class="card">
-        <span class="badge">Maple Line</span>
-        <h3>紅楓線</h3>
-        <p>
-          通往紅楓自然保護區與周邊小鎮的支線，秋季楓紅期間為熱門觀光路線。
-        </p>
+        <span class="badge">BRT Line 1</span>
+        <h3>BRT-恆夏線</h3>
+        <p>以電動無軌快捷公車在串聯恆熱、海莊、海莊遊樂園、夏城市區及碼頭的快捷公車。</p>
+      </article>
+      <article class="card">
+        <span class="badge">WRT Line 1</span>
+        <h3>WRT-環島線</h3>
+        <p>以電動快艇串聯從飛灣郵輪港出發，經過全京、夏城，繞過島嶼西南部停靠祥直。</p>
       </article>
     </div>
   </section>
 
-  <section>
-    <h2>主要車站介紹</h2>
-    <div class="grid grid-2">
-      <article class="card">
-        <h3>飛灣站</h3>
-        <p>
-          飛灣鐵路公司的核心樞紐，部分列車起訖站，周邊聚集商業設施與轉乘據點。
-        </p>
-      </article>
-      <article class="card">
-        <h3>飛灣機場站</h3>
-        <p>
-          連結機場航廈與市區交通的門戶，提供旅客於抵達後快速進入飛灣各地。
-        </p>
-      </article>
-      <article class="card">
-        <h3>全京站</h3>
-        <p>
-          所在區域為政經中心，周邊有辦公大樓與商業設施，是上班族使用率極高的車站。
-        </p>
-      </article>
-      <article class="card">
-        <h3>夏城站</h3>
-        <p>
-          觀光與度假名勝，鄰近海灘、老街與夜市，是假日尖峰時段最熱鬧的站點之一。
-        </p>
-      </article>
-      <article class="card">
-        <h3>海莊站</h3>
-        <p>
-          連結海莊渡假村與沿海旅館區的終點站，多數觀光列車於此折返。
-        </p>
-      </article>
-      <article class="card">
-        <h3>紅楓站</h3>
-        <p>
-          前往紅楓自然保護區的入口，秋季期間配合紅楓季可能加開列車。
-        </p>
-      </article>
+  <div class="fr-station-query">
+    <div class="query-top-bar">
+      <label for="stSelector">車站服務查詢 Station Search：</label>
+      <select id="stSelector" class="station-dropdown" onchange="loadStationData(this.value)">
+        <option value="FR01">FR01 飛灣工業區</option>
+        <option value="FR02">FR02 飛灣港</option>
+        <option value="FR03">FR03 物流中心</option>
+        <option value="FR04">FR04 飛灣郵輪港</option>
+        <option value="FR05">FR05 濱江商務區</option>
+        <option value="FR06">FR06 市民廣場</option>
+        <option value="FR07">FR07 文化中心</option>
+        <option value="FR08">FR08 飛灣新站</option>
+        <option value="FR09">FR09 科創園</option>
+        <option value="FR10">FR10 飛灣學區</option>
+        <option value="FR11">FR11 飛灣大道</option>
+        <option value="FR12">FR12 飛灣公園</option>
+        <option value="FR13">FR13 錦湖</option>
+        <option value="FR14">FR14 鷺島</option>
+        <option value="FR15">FR15 空港新城</option>
+        <option value="FR16">FR16 飛灣機場</option>
+        <option value="FR17">FR17 翡翠新城</option>
+        <option value="FR18">FR18 紫荊苑</option>
+        <option value="FR19">FR19 御景新村</option>
+        <option value="FR20">FR20 自然保育中心</option>
+        <option value="FR21">FR21 綾路北站</option>
+        <option value="FR22">FR22 全京大道</option>
+      </select>
     </div>
-  </section>
 
-  <section>
-    <h2>完整車站列表（示意）</h2>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-        <tr>
-          <th>路線</th>
-          <th>車站名稱</th>
-          <th>備註</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>飛灣線</td>
-          <td>飛灣、尊勇百貨、飛龍宗教中心、全京、飛灣機場、海莊、夏城…</td>
-          <td>實際站名可依原設定補完</td>
-        </tr>
-        <tr>
-          <td>飛灣環狀線</td>
-          <td>環狀各站（住宅區、商圈、學區等）</td>
-          <td>可搭配簡易路網圖使用</td>
-        </tr>
-        <tr>
-          <td>紅楓線</td>
-          <td>紅楓等沿線小站</td>
-          <td>主要服務觀光與地方居民</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="meta">
-      註：上述列表為示意，實際車站配置請依你原本設定補齊。
-    </p>
-  </section>
+    <div id="stationDetail" class="station-panel-body">
+      </div>
+  </div>
 </main>
 
-<footer class="site-footer">
-  <div class="container">
-    <p>本頁內容為架空設定，站名與路線純屬創作。</p>
-  </div>
-</footer>
+<script>
+  /* 飛灣鐵路全線車站資料庫 (FR01-FR22) */
+  const frStations = {
+    "FR01": { name: "飛灣工業區", f: ["1F 大廳層", "1F 中央詢問處", "詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "無"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"工業路一段"}], trans: "公車 101, 102 路線；共享自行車 FlyBike" },
+    "FR02": { name: "飛灣港", f: ["B1 大廳層", "B1 詢問處", "大廳層兩側", "B1 非付費區", "有", "有", "有", "開放進出", "開放進出", "20組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"港口客運大樓"}], trans: "飛灣港渡輪、公車 201 路線" },
+    "FR03": { name: "物流中心", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "無", "有", "不開放", "開放進出", "40組"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"貨運一街"}], trans: "物流接駁專車" },
+    "FR04": { name: "飛灣郵輪港", baggage: "本站於營運時間內全時段提供「機場快速行李托運服務」", f: ["1F及B1層", "1F 詢問處", "各層大廳", "1F及B1 非付費區", "有", "有", "有", "假日開放", "開放進出", "60組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"郵輪碼頭連通道"}, {id:"2", acc:true, type:"電梯", loc:"轉運站"}], trans: "WRT 快艇、公車 303、FlyBike" },
+    "FR05": { name: "濱江商務區", f: ["B1 穿堂層", "B1 詢問處", "穿堂層兩側", "B1 非付費區", "有", "有", "有", "不開放", "開放進出", "80組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"濱江大道"}], trans: "商務區接駁公車" },
+    "FR06": { name: "市民廣場", f: ["B1 穿堂層", "B1 詢問處", "穿堂層兩側", "B1 非付費區", "有", "有", "有", "開放進出", "開放進出", "50組"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"市政府旁"}], trans: "市區公車幹線" },
+    "FR07": { name: "文化中心", f: ["B1 穿堂層", "B1 詢問處", "穿堂層兩側", "B1 非付費區", "有", "有", "有", "開放進出", "開放進出", "30組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"圖書館側"}], trans: "文化專線公車" },
+    "FR08": { name: "飛灣新站", baggage: "本站於營運時間內全時段提供「機場快速行李托運服務」", f: ["B1至B2層", "B1 穿堂層中央", "B1 詢問處旁", "B1/B2 非付費區", "有", "有", "有", "不開放", "開放進出", "120組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"新站廣場"}, {id:"2", acc:true, type:"電梯", loc:"商場B1層"}], trans: "捷運轉乘、共享自行車、地下停車場" },
+    "FR09": { name: "科創園", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "40組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"科技大道"}], trans: "園區接駁車" },
+    "FR10": { name: "飛灣學區", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "20組"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"大學路"}], trans: "公車 501-505 路線" },
+    "FR11": { name: "飛灣大道", f: ["B1 穿堂層", "B1 詢問處", "穿堂層兩側", "B1 非付費區", "有", "有", "有", "開放進出", "開放進出", "30組"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"大道交叉口"}], trans: "市區公車轉乘" },
+    "FR12": { name: "飛灣公園", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "50組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"公園入口"}], trans: "共享自行車 FlyBike" },
+    "FR13": { name: "錦湖", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "20組"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"錦湖路"}], trans: "湖區巡迴公車" },
+    "FR14": { name: "鷺島", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "20組"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"鷺島步道"}], trans: "共享自行車 FlyBike" },
+    "FR15": { name: "空港新城", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "60組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"新城大道"}], trans: "機場接駁巴士" },
+    "FR16": { name: "飛灣機場", f: ["穿堂層及月台", "穿堂層服務區", "候機大廳旁", "穿堂層及航廈", "有", "有", "有", "開放進出", "開放進出", "150組"], exits: [{id:"1", acc:true, type:"電梯", loc:"第一航廈"}, {id:"2", acc:true, type:"電梯", loc:"第二航廈"}], trans: "國際/國內航班、機場巡迴巴士" },
+    "FR17": { name: "翡翠新城", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "40組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"翡翠路"}], trans: "社區巴士、共享自行車" },
+    "FR18": { name: "紫荊苑", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "20組"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"紫荊街"}], trans: "社區接駁公車" },
+    "FR19": { name: "御景新村", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "20組"], exits: [{id:"1", acc:true, type:"電梯/樓梯", loc:"御景路"}], trans: "社區接駁公車" },
+    "FR20": { name: "自然保育中心", f: ["1F 大廳層", "1F 詢問處", "1F 詢問處旁", "1F 非付費區", "有", "有", "有", "開放進出", "開放進出", "30組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"保育中心門口"}], trans: "保育區接駁專車" },
+    "FR21": { name: "綾路北站", f: ["地面層及轉乘層", "地面層詢問處", "詢問處旁", "地面層", "有", "有", "有", "開放進出", "開放進出", "40組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"紅楓路入口"}, {id:"2", acc:true, type:"電梯/樓梯", loc:"ART 接駁區"}], trans: "ART 綾京線、公車接駁" },
+    "FR22": { name: "全京大道", f: ["B1 穿堂層", "B1 詢問處", "穿堂層兩側", "B1 非付費區", "有", "有", "有", "開放進出", "開放進出", "30組"], exits: [{id:"1", acc:true, type:"電梯/電扶梯", loc:"全京路"}], trans: "市區公車轉乘、FlyBike" }
+  };
+
+  function loadStationData(id) {
+    const s = frStations[id];
+    if (!s) return;
+
+    let html = `
+      <div class="st-main-header">
+        <div class="st-code-box">${id}</div>
+        <h2 class="st-name-display">${s.name}</h2>
+      </div>
+      ${s.baggage ? `<div class="airport-checkin-info">📦 其他服務：${s.baggage}</div>` : ''}
+
+      <div class="table-category-title">車站設施設備</div>
+      <table class="fr-standard-table">
+        <tr><th>車站名稱</th><td>${s.name}</td></tr>
+        <tr><th>無障礙電梯位置</th><td>${s.f[0]}</td></tr>
+        <tr><th>詢問處位置</th><td>${s.f[1]}</td></tr>
+        <tr><th>飲水機位置</th><td>${s.f[2]}</td></tr>
+        <tr><th>廁所位置</th><td>${s.f[3]}</td></tr>
+        <tr><th>親子無障礙廁所位置</th><td>${s.f[4]}</td></tr>
+        <tr><th>哺集乳室位置</th><td>${s.f[5]}</td></tr>
+        <tr><th>嬰兒尿布臺位置</th><td>${s.f[6]}</td></tr>
+        <tr><th>自行車進出</th><td>${s.f[7]}</td></tr>
+        <tr><th>大型寵物車進出</th><td>${s.f[8]}</td></tr>
+        <tr><th>置物櫃資訊</th><td>${s.f[9]}</td></tr>
+      </table>
+
+      <div class="table-category-title">出口資訊</div>
+      <table class="fr-standard-table">
+        <tr><th>無障礙出口</th><th>出口編號</th><th>出入口型式</th><th>位置描述</th></tr>
+        ${s.exits.map(ex => `
+          <tr>
+            <td>${ex.acc ? '♿ 具備' : '無'}</td>
+            <td><span class="exit-badge">出口 ${ex.id}</span></td>
+            <td>${ex.type}</td>
+            <td>${ex.loc}</td>
+          </tr>
+        `).join('')}
+      </table>
+
+      <div class="table-category-title">轉乘、停車資訊</div>
+      <table class="fr-standard-table">
+        <tr><th>公車/共享/停車資訊</th><td>${s.trans}</td></tr>
+      </table>
+    `;
+    document.getElementById('stationDetail').innerHTML = html;
+  }
+
+  // 初始化載入第一站
+  loadStationData("FR01");
+</script>
 </body>
 </html>

@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>飛灣鐵路工務段 標準作業手冊 (完整版)</title>
+    <style>
+        /* A4 列印設定 - 參照機務段手冊樣式 */
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+        }
+        
+        body {
+            font-family: "PMingLiU", "Times New Roman", serif;
+            line-height: 1.6;
+            color: #000;
+            background: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-sizing: border-box;
+            position: relative;
+            page-break-after: always;
+        }
+
+        @media print {
+            body { background: none; margin: 0; padding: 0; }
+            .page { width: 100%; margin: 0; box-shadow: none; page-break-after: always; }
+        }
+
+        /* 標題與內文樣式 - 保持一致性 */
+        h1 { font-size: 26pt; text-align: center; margin-bottom: 40px; font-weight: 900; font-family: "Microsoft JhengHei", sans-serif; }
+        h2 { font-size: 20pt; border-bottom: 3px double #000; padding-bottom: 10px; margin-top: 30px; font-family: "Microsoft JhengHei", sans-serif; }
+        h3 { font-size: 16pt; margin-top: 25px; background-color: #f4f4f4; padding: 8px; border-left: 8px solid #b85b00; /* 工務段改用工程橘/棕色系區隔，或維持藍色亦可，此處微調為工程色 */ font-family: "Microsoft JhengHei", sans-serif; }
+        h4 { font-size: 13pt; margin-top: 20px; font-weight: bold; text-decoration: underline; }
+        
+        p, li { font-size: 11pt; text-align: justify; margin-bottom: 8px; }
+        ul, ol { margin-left: 20px; padding-left: 0; }
+        li { margin-bottom: 5px; }
+
+        /* 表格 */
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 10pt; page-break-inside: avoid; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        th { background-color: #e8e8e8; text-align: center; font-weight: bold; }
+
+        /* 警告框與備註 */
+        .warning-box { border: 2px solid red; padding: 15px; margin: 15px 0; page-break-inside: avoid; }
+        .warning-title { color: red; font-weight: bold; font-size: 12pt; display: block; margin-bottom: 5px; }
+        
+        .note-box { background-color: #fff8e1; border-left: 4px solid #d4a017; padding: 10px; margin: 10px 0; font-style: italic; font-size: 10pt; }
+
+        /* 檢查表樣式 */
+        .checklist { border: 1px solid #000; padding: 5px; margin: 10px 0; font-family: "Consolas", monospace; }
+        .cl-row { display: flex; justify-content: space-between; padding: 6px 10px; border-bottom: 1px dashed #ccc; }
+        .cl-row:last-child { border-bottom: none; }
+        .cl-item { font-weight: bold; }
+        .cl-check { font-weight: bold; }
+
+        /* 頁尾 */
+        .footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            right: 20mm;
+            text-align: center;
+            font-size: 9pt;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+        }
+        .page-num::after { content: counter(page); }
+    </style>
+</head>
+<body>
+
+<div class="page" style="display: flex; flex-direction: column; justify-content: center; text-align: center;">
+    <div style="margin-top: 50px; font-size: 48pt; font-weight: 900; line-height: 1.2;">
+        大型養路機械<br>
+        工務段作業手冊
+    </div>
+    <div style="font-size: 24pt; margin-top: 20px; color: #555;">
+        MAINTENANCE OF WAY MANUAL (MOW)
+    </div>
+    
+    <div style="margin: 80px auto; width: 60%; border: 5px solid #b85b00; padding: 40px;">
+        <p style="font-size: 16pt;"><strong>適用範圍：</strong> 軌道維護隊 / 機械分隊</p>
+        <p style="font-size: 16pt;"><strong>文件編號：</strong> ENG-MOW-2026-V1.0</p>
+        <p style="font-size: 16pt;"><strong>修訂日期：</strong> 2026/01/28</p>
+    </div>
+
+    <div style="margin-top: auto; margin-bottom: 50px;">
+        <p><strong>飛灣鐵路股份有限公司 工務處</strong></p>
+        <p>FEIWAN RAILWAY CO., ENGINEERING DEPT.</p>
+    </div>
+</div>
+
+<div class="page">
+    <h1>文件控制與修訂記錄</h1>
+
+    <h3>版權聲明</h3>
+    <p>本手冊內容屬飛灣鐵路股份有限公司（Feiwan Railway Co.）工務處所有。本手冊詳述軌道養護機械之操作標準、維護規範及緊急應變程序，僅供內部合格人員使用，未經書面許可禁止複製或外流。</p>
+
+    <h3>修訂記錄 (Revision History)</h3>
+    <table>
+        <tr>
+            <th width="15%">版本</th>
+            <th width="20%">日期</th>
+            <th width="20%">修訂者</th>
+            <th width="45%">說明</th>
+        </tr>
+        <tr>
+            <td>V 0.5</td>
+            <td>2024/06/10</td>
+            <td>工程部</td>
+            <td>草案初擬</td>
+        </tr>
+        <tr>
+            <td>V 0.9</td>
+            <td>2025/11/15</td>
+            <td>安全室</td>
+            <td>新增夜間施工防護規定</td>
+        </tr>
+        <tr>
+            <td>V 1.0</td>
+            <td>2026/01/28</td>
+            <td>技術長</td>
+            <td>正式發行，整合砸道車與檢測車規範</td>
+        </tr>
+    </table>
+
+    <h3>適用人員資格</h3>
+    <ul>
+        <li>持有國家檢定合格之重機械操作執照（軌道類）。</li>
+        <li>通過飛灣鐵路公司內部「養路機械操作」培訓考核者。</li>
+        <li>每兩年需完成一次複訓與體格檢查。</li>
+    </ul>
+
+    <div class="footer">Page i</div>
+</div>
+
+<div class="page">
+    <h1>目 錄 (Table of Contents)</h1>
+    <ul style="list-style: none;">
+        <li><strong>第一章 總則與工程設備簡介</strong> ......................................... 1</li>
+        <li>　1.1 工務段任務與安全核心 ................................................. 1</li>
+        <li>　1.2 機械設備分類表 .............................................................. 2</li>
+        <li><strong>第二章 車輛、設備介紹</strong> ..................................................... 3</li>
+        <li>　2.1 大型砸道車 (Tamping Machine) ..................................... 3</li>
+        <li>　　2.1.1 主要諸元與構造 ...................................................... 3</li>
+        <li>　　2.1.2 砸道原理與夾頭系統 .............................................. 4</li>
+        <li>　　2.1.3 駕駛室與電腦介面 (ALC) ........................................ 5</li>
+        <li>　2.2 道碴整平車 (Ballast Regulator) ...................................... 6</li>
+        <li>　　2.2.1 作業犁與清掃裝置 .................................................. 6</li>
+        <li>　2.3 軌道穩定車 (Stabilizer) .................................................. 7</li>
+        <li>　2.4 鋼軌研磨車 (Rail Grinder) ............................................. 8</li>
+        <li>　2.5 軌道檢查車 (Track Inspection Car) ................................ 9</li>
+        <li>　　2.5.1 檢測項目與標準 ...................................................... 9</li>
+        <li>　2.6 小型機具 (手持砸道機/切軌機) ..................................... 10</li>
+        <li><strong>第三章 標準操作程序 (SOP)</strong> ............................................... 11</li>
+        <li>　3.1 出庫前檢點 (Pre-Work Check) ........................................ 11</li>
+        <li>　3.2 路線封鎖與進場程序 ...................................................... 12</li>
+        <li>　3.3 砸道作業標準程序 .......................................................... 13</li>
+        <li>　3.4 鋼軌研磨作業標準程序 .................................................. 14</li>
+        <li>　3.5 收工、順坡與解除封鎖 .................................................. 15</li>
+        <li><strong>第四章 狀況排除與緊急應變</strong> ............................................... 16</li>
+        <li>　4.1 液壓系統故障排除 .......................................................... 16</li>
+        <li>　4.2 車輛拋錨與救援連結 ...................................................... 17</li>
+        <li>　4.3 施工事故緊急處置 (SOP) ................................................ 18</li>
+        <li><strong>第五章 附錄</strong> ......................................................................... 19</li>
+        <li>　5.1 常用手勢與號誌 .............................................................. 19</li>
+        <li>　5.2 每日保養紀錄表 (範本) .................................................. 20</li>
+    </ul>
+    <div class="footer">Page ii</div>
+</div>
+
+<div class="page">
+    <h1>第一章 總則與工程設備簡介</h1>
+
+    <h3>1.1 工務段任務與安全核心</h3>
+    <p>工務段主要職責為確保軌道結構（鋼軌、枕木、道碴、路基）之幾何平整與結構強度，提供列車安全、舒適的運行環境。所有作業必須在「絕對封鎖」或「依規定防護」下進行。</p>
+
+    <div class="warning-box">
+        <span class="warning-title">安全鐵律 (Safety Rules)：</span>
+        1. 嚴禁未經確認封鎖號碼即進入正線。<br>
+        2. 軌道區作業必須穿著標準 PPE（反光背心、安全帽、安全鞋）。<br>
+        3. 機械操作半徑內嚴禁人員站立。
+    </div>
+
+    <h3>1.2 工程車輛識別</h3>
+    <p>本公司工程車輛代號原則如下：</p>
+    <ul>
+        <li><strong>TMP：</strong> Tamping Machine (砸道車)</li>
+        <li><strong>BR：</strong> Ballast Regulator (整平車)</li>
+        <li><strong>DTS：</strong> Dynamic Track Stabilizer (穩定車)</li>
+        <li><strong>RG：</strong> Rail Grinder (研磨車)</li>
+        <li><strong>EM：</strong> Engineering Motor Car (工程維修車/平台車)</li>
+    </ul>
+
+    <div class="footer">Page 1</div>
+</div>
+
+<div class="page">
+    <h3>1.3 機械設備分類表</h3>
+    
+    <p>工務段配置之機械設備依功能區分如下表：</p>
+    <table>
+        <tr>
+            <th width="20%">類別</th>
+            <th width="25%">代表車種</th>
+            <th width="55%">主要功能</th>
+        </tr>
+        <tr>
+            <td rowspan="3"><strong>軌道幾何調整</strong></td>
+            <td>08-32 砸道車</td>
+            <td>修正軌道高低、水平、方向，夯實枕下道碴。</td>
+        </tr>
+        <tr>
+            <td>道碴整平車</td>
+            <td>整理道床斷面，清掃枕木面與扣件。</td>
+        </tr>
+        <tr>
+            <td>動力穩定車</td>
+            <td>模擬列車振動，使道碴迅速密實，增加橫向阻力。</td>
+        </tr>
+        <tr>
+            <td rowspan="2"><strong>鋼軌維護</strong></td>
+            <td>鋼軌研磨車</td>
+            <td>消除鋼軌波狀磨耗、fatigue cracks，修整軌頭輪廓。</td>
+        </tr>
+        <tr>
+            <td>超音波探傷車</td>
+            <td>檢測鋼軌內部裂紋與瑕疵。</td>
+        </tr>
+        <tr>
+            <td><strong>其他輔助</strong></td>
+            <td>軌陸兩用挖掘機</td>
+            <td>換枕、換軌、邊坡除草等多功能用途。</td>
+        </tr>
+    </table>
+
+    <div class="note-box">
+        註：大型養路機械通常以「群組作業 (Team Work)」方式出動，常見編組為：砸道車 + 整平車 + 穩定車。
+    </div>
+
+    <div class="footer">Page 2</div>
+</div>
+
+<div class="page">
+    <h1>第二章 車輛、設備介紹</h1>
+
+    <h3>2.1 大型砸道車 (08-32 Tamping Machine)</h3>
+    <p>本型車為雙枕連續式砸道車，具備起道、撥道、砸道三合一功能，為軌道養護之主力機種。</p>
+
+    
+    <h4>2.1.1 主要諸元 (Specifications)</h4>
+    <table>
+        <tr><th width="30%">項目</th><th>數據</th></tr>
+        <tr><td>全長</td><td>17,800 mm</td></tr>
+        <tr><td>全寬</td><td>3,000 mm</td></tr>
+        <tr><td>總重</td><td>約 62 噸</td></tr>
+        <tr><td>最高自走速度</td><td>80 km/h</td></tr>
+        <tr><td>作業效率</td><td>約 1200 ~ 1600 公尺/小時</td></tr>
+        <tr><td>砸道頻率</td><td>35 Hz (非同步振動)</td></tr>
+    </table>
+
+    <h4>構造特點：</h4>
+    <ul>
+        <li><strong>衛星小車 (Satellite Unit)：</strong> 作業時車體連續前進，僅砸道單元在衛星小車上進行「走-停-砸」循環，大幅提升效率與舒適度。</li>
+        <li><strong>隔音艙：</strong> 引擎與液壓系統均包覆於隔音罩內，降低噪音污染。</li>
+    </ul>
+
+    <div class="footer">Page 3</div>
+</div>
+
+<div class="page">
+    <h4>2.1.2 砸道原理與夾頭系統</h4>
+    <p>砸道作業是透過高頻振動與夾實動作，將道碴重新排列緊密，以支撐軌道載重。</p>
+
+    <div style="border: 2px solid #333; padding: 15px; background: #fdfdfd;">
+        <p><strong>1. 插入 (Penetration)</strong></p>
+        <p>砸道夾 (Tines) 以 35Hz 頻率振動，垂直插入道碴中。振動能液化道碴，減少插入阻力。</p>
+
+        <p><strong>2. 夾實 (Squeezing)</strong></p>
+        <p>當砸道夾到達預定深度後，油壓缸驅動夾頭向枕木中心夾持，將道碴擠入枕木下方空隙。</p>
+        
+        <p><strong>3. 保持與固結</strong></p>
+        <p>依據道床硬度設定夾實時間 (Squeeze Time)，通常為 0.8 ~ 1.2 秒。</p>
+
+        <p><strong>4. 提升 (Release)</strong></p>
+        <p>夾實完成後，夾頭張開並迅速提升，準備下一次循環。</p>
+    </div>
+
+    <div class="warning-box">
+        <strong>磨耗注意：</strong> 砸道夾尖端磨耗若超過 20% (與新夾比較)，將嚴重影響搗固效果，必須立即更換。
+    </div>
+
+    <div class="footer">Page 4</div>
+</div>
+
+<div class="page">
+    <h4>2.1.3 駕駛室與電腦介面 (ALC)</h4>
+    <p><strong>ALC (Automatic Liner Control) 自動導向電腦：</strong></p>
+    <p>現代砸道車均配備 ALC 系統，負責計算軌道幾何偏差量。</p>
+
+    <ul>
+        <li><strong>前駕駛室 (Front Cab)：</strong> 負責行駛、數據輸入、雷射校正。
+            <ul>
+                <li>DMI 螢幕：顯示行車速度、引擎轉速、氣壓。</li>
+                <li>ALC 終端機：輸入軌道設計資料 (半徑、超高、緩和曲線長)。</li>
+            </ul>
+        </li>
+        <li><strong>作業室 (Work Cab)：</strong> 位於車體中央下方，操作手直接目視作業點。
+            <ul>
+                <li>砸道踏板：腳踏控制砸道單元升降與夾實。</li>
+                <li>起撥道控制桿：微調起道量與撥道量。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="note-box">
+        <strong>測量系統：</strong> 車體前後均設有測量小車 (Trolley) 與鋼弦 (Chord)，利用三點法或四點法量測軌道正矢 (Versine)。
+    </div>
+
+    <div class="footer">Page 5</div>
+</div>
+
+<div class="page">
+    <h3>2.2 道碴整平車 (Ballast Regulator)</h3>
+    <p><strong>車型代號：BR-500</strong></p>
+    <p>砸道作業後，道床表面會呈現鬆散且不規則狀態，需利用整平車進行斷面修整。</p>
+
+    
+    <h4>2.2.1 作業犁與清掃裝置</h4>
+    <ul>
+        <li><strong>側犁 (Side Plows)：</strong> 位於車體兩側，具伸縮翼板。
+            <ul>
+                <li>功能：將滑落至路基的道碴收回道肩，或修整道肩坡度 (通常為 1:1.5)。</li>
+            </ul>
+        </li>
+        <li><strong>中犁 (Center Plow)：</strong> 位於車體下方，呈現 X 型或 V 型。
+            <ul>
+                <li>功能：調配軌道中心與兩側的道碴量，可將多餘道碴向左右分配。</li>
+            </ul>
+        </li>
+        <li><strong>清掃裝置 (Broom Box)：</strong> 位於車尾。
+            <ul>
+                <li>構造：旋轉橡膠管 + 輸送帶。</li>
+                <li>功能：掃除枕木面與扣件上的碎石，並將石碴拋至兩側或收集至儲石箱。</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="footer">Page 6</div>
+</div>
+
+<div class="page">
+    <h3>2.3 軌道穩定車 (Dynamic Track Stabilizer)</h3>
+    <p><strong>目的：</strong> 砸道後的軌道雖然幾何正確，但道碴鬆散，通車初期易發生沉陷。穩定車透過模擬列車負載，強制軌道提早「初期沉陷」，增加橫向阻力。</p>
+
+    <h4>工作原理</h4>
+    <p>穩定單元夾住兩條鋼軌，施加兩個方向的力：</p>
+    <ol>
+        <li><strong>垂直靜載重：</strong> 液壓缸向下施壓 (約 20~30 噸)。</li>
+        <li><strong>水平振動：</strong> 偏心軸產生水平方向振動 (頻率 0~42Hz)。</li>
+    </ol>
+
+    <div class="warning-box">
+        <strong>橋樑作業注意：</strong> 在老舊橋樑或結構脆弱區段作業時，必須關閉或降低穩定車之振動頻率，以免共振造成結構受損。
+    </div>
+
+    <div class="footer">Page 7</div>
+</div>
+
+<div class="page">
+    <h3>2.4 鋼軌研磨車 (Rail Grinder)</h3>
+    <p>利用高速旋轉的砂輪 (Grinding Stones) 切削鋼軌表面，以維護軌頭形狀。</p>
+
+    <h4>研磨目的：</h4>
+    <ul>
+        <li><strong>預防性研磨 (Preventive)：</strong> 去除微小裂紋 (RCF)，防止擴大。</li>
+        <li><strong>矯正性研磨 (Corrective)：</strong> 消除波狀磨耗 (Corrugation) 減少噪音與振動。</li>
+        <li><strong>斷面修整 (Profile)：</strong> 恢復設計之軌頭圓弧，優化輪軌接觸點。</li>
+    </ul>
+
+    <h4>火花防護系統</h4>
+    <p>研磨作業會產生大量高溫火花，車輛配備：</p>
+    <ul>
+        <li><strong>防火裙板：</strong> 防止火花噴濺至路權外。</li>
+        <li><strong>噴水系統：</strong> 前後轉向架均設有高壓噴嘴，作業中持續噴水降溫與滅火。</li>
+        <li><strong>水車：</strong> 通常編組尾端會加掛大型水箱車。</li>
+    </ul>
+
+    <div class="footer">Page 8</div>
+</div>
+
+<div class="page">
+    <h3>2.5 軌道檢查車 (Track Inspection Car)</h3>
+    <p>俗稱「醫務車」，以雷射光學與慣性測量單元 (IMU) 高速檢測軌道狀態。</p>
+
+    <h4>2.5.1 檢測項目與標準</h4>
+    <table style="font-size: 9pt;">
+        <tr>
+            <th>項目</th>
+            <th>定義</th>
+            <th>一般安全容許值 (範例)</th>
+        </tr>
+        <tr>
+            <td><strong>軌距 (Gauge)</strong></td>
+            <td>兩軌頭內側下 14mm 處之距離。</td>
+            <td>+10mm / -4mm</td>
+        </tr>
+        <tr>
+            <td><strong>水平 (Cross Level)</strong></td>
+            <td>左右鋼軌之高度差。</td>
+            <td>8mm</td>
+        </tr>
+        <tr>
+            <td><strong>高低 (Longitudinal Level)</strong></td>
+            <td>鋼軌頂面沿縱向之凹凸不平。</td>
+            <td>10mm (10米弦)</td>
+        </tr>
+        <tr>
+            <td><strong>方向 (Alignment)</strong></td>
+            <td>鋼軌側面沿縱向之平整度。</td>
+            <td>10mm (10米弦)</td>
+        </tr>
+        <tr>
+            <td><strong>平面性 (Twist)</strong></td>
+            <td>一定距離內(如3m)水平變化量，防脫軌關鍵。</td>
+            <td>5mm / 3m</td>
+        </tr>
+    </table>
+
+    <div class="footer">Page 9</div>
+</div>
+
+<div class="page">
+    <h3>2.6 小型機具</h3>
+    <p>用於局部維修或大型機械無法進入之場所（如道岔死角）。</p>
+
+    <ul>
+        <li><strong>手持式砸道機 (Hand Tamper)：</strong> 
+            <p>震動式或衝擊式。需由 2-4 人一組，對角作業。</p>
+        </li>
+        <li><strong>切軌機 (Rail Saw)：</strong>
+            <p>使用汽油引擎驅動砂輪片。<strong>操作重點：</strong>切割時需持續注水冷卻，防止鋼軌端面退火硬化。</p>
+        </li>
+        <li><strong>鑽孔機 (Rail Drill)：</strong>
+            <p>用於安裝魚尾鈑或地線。需使用專用中心鑽頭。</p>
+        </li>
+        <li><strong>軌道千斤頂 (Track Jack)：</strong>
+            <p>俗稱「起道機」。用於手動起道或更換膠墊。</p>
+        </li>
+    </ul>
+
+    <div class="footer">Page 10</div>
+</div>
+
+<div class="page">
+    <h1>第三章 標準操作程序 (SOP)</h1>
+    
+    <h3>3.1 出庫前檢點 (Pre-Work Check)</h3>
+    <p>所有機械操作員須於發動引擎前執行「五油三水」及走行部檢查。</p>
+
+    <h4>A. 引擎與液壓系統 (Engine & Hydraulics)</h4>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 引擎機油</span><span class="cl-check">油尺液位正常 (H-L之間)</span></div>
+        <div class="cl-row"><span class="cl-item">2. 冷卻水/副水箱</span><span class="cl-check">水位正常、無洩漏</span></div>
+        <div class="cl-row"><span class="cl-item">3. 液壓油 (Hydraulic Oil)</span><span class="cl-check">油位計顯示正常、油溫正常</span></div>
+        <div class="cl-row"><span class="cl-item">4. 分動箱/變速箱油</span><span class="cl-check">油位正常</span></div>
+        <div class="cl-row"><span class="cl-item">5. 燃油儲量</span><span class="cl-check">足以支撐本日作業 (建議滿油)</span></div>
+    </div>
+
+    <h4>B. 鎖定裝置檢查 (Locking Device)</h4>
+    <p>確保工作裝置在行駛模式下被牢固鎖定，防止掉落。</p>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 砸道單元鎖銷</span><span class="cl-check">已插入並固定</span></div>
+        <div class="cl-row"><span class="cl-item">2. 起撥道單元鎖鍊/銷</span><span class="cl-check">已掛妥固定</span></div>
+        <div class="cl-row"><span class="cl-item">3. 測量小車</span><span class="cl-check">已升起並鎖定</span></div>
+        <div class="cl-row"><span class="cl-item">4. 側犁/中犁 (整平車)</span><span class="cl-check">已收折並鎖定</span></div>
+    </div>
+
+    <div class="footer">Page 11</div>
+</div>
+
+<div class="page">
+    <h3>3.2 路線封鎖與進場程序</h3>
+    <p><strong>Track Possession Protocols</strong></p>
+
+    <h4>A. 封鎖申請流程</h4>
+    <ol>
+        <li><strong>工務負責人：</strong> 抵達車站運轉室，填寫《施工封鎖申請單》。</li>
+        <li><strong>調度員：</strong> 確認區間無列車，下達封鎖命令，給予「封鎖號碼」。</li>
+        <li><strong>車站值班員：</strong> 於控制盤上懸掛「路線封鎖」標示，並交付「路牌」或「通行證」給工務負責人。</li>
+    </ol>
+
+    <h4>B. 進入區間</h4>
+    <ul>
+        <li>確認號誌顯示進行（或調度員口頭授權）。</li>
+        <li>車輛進入正線後，依規定開啟黃色警示燈。</li>
+        <li>行駛至作業點前，於前後兩端規定距離（如 800m）設置手持號誌機或派員防護。</li>
+    </ul>
+
+    <div class="warning-box">
+        <strong>鄰軌防護：</strong> 若作業鄰線仍有列車通行，必須保持高度警戒，當鄰線列車通過時，所有機械停止動作（例如停止撥道），人員退至安全處。
+    </div>
+
+    <div class="footer">Page 12</div>
+</div>
+
+<div class="page">
+    <h3>3.3 砸道作業標準程序</h3>
+
+    <h4>A. 作業準備</h4>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 測量系統展開</span><span class="cl-check">放下前後小車，張緊鋼弦</span></div>
+        <div class="cl-row"><span class="cl-item">2. 數據輸入</span><span class="cl-check">輸入起點里程、目標高程</span></div>
+        <div class="cl-row"><span class="cl-item">3. 解除鎖定</span><span class="cl-check">拔除所有工作單元安全銷</span></div>
+        <div class="cl-row"><span class="cl-item">4. 試運轉</span><span class="cl-check">空打一次，確認振動頻率 35Hz</span></div>
+    </div>
+
+    <h4>B. 實施作業</h4>
+    <ul>
+        <li><strong>對位：</strong> 操作手將砸道夾對準枕木兩側空隙（避開枕木、扣件）。</li>
+        <li><strong>下插：</strong> 踩下踏板，夾頭高速下插。</li>
+        <li><strong>夾實：</strong> 到達深度後自動夾實（注意夾實時間與壓力）。</li>
+        <li><strong>起撥道：</strong> 電腦同步控制軌道提升與橫移。</li>
+        <li><strong>前進：</strong> 提升夾頭，衛星小車自動推進至下一枕木。</li>
+    </ul>
+
+    <div class="note-box">
+        <strong>障礙物迴避：</strong> 遇有 ATS 感應器、軌道接續線、平交道板時，禁止下插砸道，應改用人工輔助或跳過。
+    </div>
+
+    <div class="footer">Page 13</div>
+</div>
+
+<div class="page">
+    <h3>3.4 鋼軌研磨作業標準程序</h3>
+
+    <h4>A. 環境確認</h4>
+    <ul>
+        <li>確認沿線無易燃雜草、紙屑。</li>
+        <li>確認水車水量充足。</li>
+        <li>通知沿線平交道保全注意火花。</li>
+    </ul>
+
+    <h4>B. 研磨模式設定</h4>
+    <ul>
+        <li>依據鋼軌硬度與磨耗量，選擇「磨石角度模式 (Pattern)」。</li>
+        <li>設定研磨速度（通常 3~10 km/h）與馬達負載電流。</li>
+    </ul>
+
+    <h4>C. 作業中監控</h4>
+    <div class="checklist">
+        <div class="cl-row"><span class="cl-item">1. 火花狀態</span><span class="cl-check">火花應向後噴射，不可垂直噴濺</span></div>
+        <div class="cl-row"><span class="cl-item">2. 磨石負載</span><span class="cl-check">各軸安培數均勻</span></div>
+        <div class="cl-row"><span class="cl-item">3. 表面品質</span><span class="cl-check">目視軌面光亮，無發藍(燒傷)</span></div>
+        <div class="cl-row"><span class="cl-item">4. 滅火確認</span><span class="cl-check">後方監視人員確認無殘火</span></div>
+    </div>
+
+    <div class="footer">Page 14</div>
+</div>
+
+<div class="page">
+    <h3>3.5 收工、順坡與解除封鎖</h3>
+    <p>作業結束並非立即離開，需確保軌道可供列車安全高速通過。</p>
+
+    <h4>A. 順坡作業 (Ramping Out)</h4>
+    <p>砸道後的軌道通常比原軌道高，必須在作業終點進行「順坡」，使軌道高度緩慢降回原高度。</p>
+    <ul>
+        <li><strong>順坡率：</strong> 建議為 1‰ (每 1000m 長度僅能下降 1m 高度差)。</li>
+        <li><strong>方法：</strong> 砸道車電腦設定自動順坡，逐漸減少起道量直至 0。</li>
+    </ul>
+
+    <h4>B. 撤收程序</h4>
+    <ol>
+        <li>收起測量小車與張力鋼弦。</li>
+        <li>將所有工作單元（砸道頭、犁板）升至定位。</li>
+        <li><strong>插入安全鎖銷 (Locking Pins) 並確認扣好。</strong></li>
+        <li>清點工具、材料，確認無遺留於軌道區。</li>
+    </ol>
+
+    <h4>C. 解除封鎖</h4>
+    <ol>
+        <li>車輛全數返回車站或基地內。</li>
+        <li>負責人交還路牌/通行證。</li>
+        <li>填寫《封鎖解除單》，確認「路線清楚」。</li>
+        <li>調度員恢復正線行車。</li>
+    </ol>
+
+    <div class="footer">Page 15</div>
+</div>
+
+<div class="page">
+    <h1>第四章 狀況排除與緊急應變</h1>
+    
+    <h3>4.1 液壓系統故障排除</h3>
+    <p>液壓系統為工務車輛之心臟，常見故障如下：</p>
+
+    <table style="font-size: 9pt;">
+        <tr><th width="20%">故障現象</th><th width="30%">可能原因</th><th>簡易排除與處置</th></tr>
+        <tr>
+            <td><strong>工作裝置無動作</strong></td>
+            <td>1. 液壓泵未啟動<br>2. 電磁閥故障<br>3. 安全鎖未解</td>
+            <td>1. 檢查 PTO (動力分導) 是否接合。<br>2. 檢查保險絲與繼電器。<br>3. 確認機械鎖銷已拔除。</td>
+        </tr>
+        <tr>
+            <td><strong>油溫過高 (>80°C)</strong></td>
+            <td>1. 冷卻風扇失效<br>2. 油量不足<br>3. 連續高負載</td>
+            <td>1. 清潔散熱器鰭片。<br>2. 暫停作業怠速降溫。<br>3. 補充液壓油。</td>
+        </tr>
+        <tr>
+            <td><strong>爆油管 (噴油)</strong></td>
+            <td>1. 管路老化<br>2. 摩擦破皮</td>
+            <td><strong>立即熄火！</strong> 釋放殘壓，使用備用油管更換，並用吸油棉清除道碴上油漬，防止汙染。</td>
+        </tr>
+    </table>
+
+    <div class="footer">Page 16</div>
+</div>
+
+<div class="page">
+    <h3>4.2 車輛拋錨與救援連結</h3>
+    <p>若車輛故障無法自力移動，需請求救援。</p>
+
+    <h4>A. 連結前準備</h4>
+    <ol>
+        <li><strong>解除傳動軸：</strong> 為防止損壞液壓馬達，必須手動拆除傳動軸或切換分動箱至「拖曳模式 (Tow Mode)」。</li>
+        <li><strong>解除煞車：</strong> 
+            <ul>
+                <li>若引擎無法發動（無氣壓），需手動旋鬆彈簧煞車缸 (Spring Brake) 之釋放螺栓。</li>
+                <li>確認車輪可自由轉動。</li>
+            </ul>
+        </li>
+    </ol>
+
+    <h4>B. 連結作業</h4>
+    <ul>
+        <li>使用專用之「過渡連結器」或「硬桿 (Tow Bar)」。嚴禁使用鋼索軟拖。</li>
+        <li>連結後連接氣管（若相容），測試煞車連動。</li>
+        <li>拖曳速度不得超過 30 km/h (通過道岔 10 km/h)。</li>
+    </ul>
+
+    <div class="footer">Page 17</div>
+</div>
+
+<div class="page">
+    <h3>4.3 施工事故緊急處置 (SOP)</h3>
+
+    <h4>情境：車輛脫軌 (Derailment)</h4>
+    <div class="warning-box">
+        保持冷靜，首要任務為「阻擋其他列車進入」。
+    </div>
+
+    <ol>
+        <li><strong>緊急通報：</strong>
+            <ul>
+                <li>使用無線電呼叫調度員與鄰近車站：「緊急停車！(車號)於(地點)脫軌，請封鎖路線！」</li>
+                <li>按下平交道緊急按鈕（若附近有）。</li>
+            </ul>
+        </li>
+        <li><strong>列車防護：</strong>
+            <ul>
+                <li>於事故點前後兩端 800公尺 (依速限規定) 處設置響燉、紅旗/紅燈。</li>
+            </ul>
+        </li>
+        <li><strong>現場保全：</strong>
+            <ul>
+                <li>確認人員受傷情形，通報 119。</li>
+                <li>切斷燃油與電源，防止起火。</li>
+                <li>保留現場狀態，等待運安會或行保會調查。</li>
+            </ul>
+        </li>
+        <li><strong>復軌作業：</strong>
+            <ul>
+                <li>待調查完畢，使用復軌器 (Rerailer) 或吊車進行復軌。</li>
+            </ul>
+        </li>
+    </ol>
+
+    <div class="footer">Page 18</div>
+</div>
+
+<div class="page">
+    <h1>第五章 附錄</h1>
+
+    <h3>5.1 常用手勢與號誌</h3>
+    <p>在噪音吵雜的環境下，手勢為主要溝通工具。</p>
+
+    <table style="text-align: center;">
+        <tr>
+            <th width="33%">動作</th>
+            <th width="33%">日間手勢</th>
+            <th width="33%">夜間燈號</th>
+        </tr>
+        <tr>
+            <td><strong>移動 / 接近</strong></td>
+            <td>單手高舉，左右搖動</td>
+            <td>白色燈光左右搖動</td>
+        </tr>
+        <tr>
+            <td><strong>停止</strong></td>
+            <td>雙手高舉，急劇揮動</td>
+            <td>紅色燈光上下搖動</td>
+        </tr>
+        <tr>
+            <td><strong>微調 (慢行)</strong></td>
+            <td>雙手下垂，手掌向內撥動</td>
+            <td>白色燈光慢速閃爍/搖動</td>
+        </tr>
+        <tr>
+            <td><strong>作業開始/下插</strong></td>
+            <td>單手握拳，向下急揮</td>
+            <td>(依無線電通話為主)</td>
+        </tr>
+    </table>
+
+    <div class="footer">Page 19</div>
+</div>
+
+<div class="page">
+    <h3>5.2 每日保養紀錄表 (範本)</h3>
+    <div class="checklist" style="height: 500px; position: relative;">
+        <div style="text-align: center; font-weight: bold; border-bottom: 2px solid #000; padding: 10px;">
+            飛灣鐵路 大型養路機械 日常檢點卡
+        </div>
+        <div style="padding: 10px;">
+            <p>車號：__________ 日期：20__/__/__ 里程：________ hr</p>
+        </div>
+        
+        <table style="width: 95%; margin: 0 auto;">
+            <tr><th>檢點項目</th><th>狀態</th><th>檢點項目</th><th>狀態</th></tr>
+            <tr><td>1. 引擎機油</td><td>[ ]</td><td>6. 煞車功能</td><td>[ ]</td></tr>
+            <tr><td>2. 液壓油位</td><td>[ ]</td><td>7. 燈光照明</td><td>[ ]</td></tr>
+            <tr><td>3. 冷卻水位</td><td>[ ]</td><td>8. 警示號角</td><td>[ ]</td></tr>
+            <tr><td>4. 燃油油位</td><td>[ ]</td><td>9. 砸道夾磨耗</td><td>[ ]</td></tr>
+            <tr><td>5. 走行輪況</td><td>[ ]</td><td>10. 鎖定插銷</td><td>[ ]</td></tr>
+        </table>
+        
+        <div style="margin: 20px; border: 1px solid #999; height: 150px; padding: 10px;">
+            <strong>異常狀況記述：</strong><br>
+        </div>
+        
+        <div style="text-align: right; padding: 20px;">
+            檢查人簽章：____________ 主管簽章：____________
+        </div>
+    </div>
+
+    <div style="margin-top: 50px; text-align: center; color: #666; font-size: 10pt;">
+        <p>飛灣鐵路股份有限公司 工務處 印製</p>
+        <p>Feiwan Railway Co. Engineering Dept.</p>
+        <p>EMERGENCY CALL: 0800-119-110</p>
+    </div>
+
+    <div class="footer">Page 20 (End)</div>
+</div>
+
+</body>
+</html>
